@@ -6,10 +6,12 @@ import Product from "@/components/sections/Product";
 import Cocktails from "@/components/sections/Cocktails";
 import Story from "@/components/sections/Story";
 import Footer from "@/components/sections/Footer";
+import Navbar from "@/components/navigation/Navbar";
 
 export default function Home() {
   return (
     <main className="bg-black">
+      <Navbar />
       <Hero />
 
       <Manifesto />

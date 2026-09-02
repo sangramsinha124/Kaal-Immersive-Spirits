@@ -1,6 +1,6 @@
 export default function Cocktails() {
   return (
-    <section className="min-h-screen px-6 py-32">
+    <section id="cocktails" className="min-h-screen px-6 py-32">
       <div className="mx-auto max-w-6xl">
         <p className="mb-6 text-sm uppercase tracking-[0.5em] text-white/40">
           The ritual
