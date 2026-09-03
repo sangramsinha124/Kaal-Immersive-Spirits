@@ -1,390 +1,630 @@
 "use client";
 
-import { useRef } from "react";
-
+import { useCallback, useRef, useState } from "react";
+import * as THREE from "three";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-import * as THREE from "three";
-
-import BottleScene from "../three/BottleScene";
+import BottleScene from "@/components/three/BottleScene";
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function Product() {
   const container = useRef<HTMLElement>(null);
 
-  const bottleRef = useRef<THREE.Group | null>(null);
+  const bottleRef = useRef<THREE.Group>(null);
+  const cameraRef = useRef<THREE.PerspectiveCamera>(null);
 
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
+  const [sceneReady, setSceneReady] = useState(false);
+
+  const handleSceneReady = useCallback(() => {
+    setSceneReady(true);
+  }, []);
 
   useGSAP(
     () => {
-      if (!container.current || !bottleRef.current || !cameraRef.current) {
+      if (
+        !sceneReady ||
+        !container.current ||
+        !bottleRef.current ||
+        !cameraRef.current
+      ) {
         return;
       }
 
       const bottle = bottleRef.current;
-
       const camera = cameraRef.current;
 
+      console.log("🎬 KAAL Product Scene Ready");
+
       /*
-       * ============================================
-       * MASTER PRODUCT TIMELINE
-       * ============================================
+       * ============================================================
+       * RESET
+       * ============================================================
+       */
+
+      gsap.killTweensOf(bottle);
+      gsap.killTweensOf(bottle.position);
+      gsap.killTweensOf(bottle.rotation);
+      gsap.killTweensOf(bottle.scale);
+      gsap.killTweensOf(camera.position);
+
+      /*
+       * Three.js POSITION
+       */
+      gsap.set(bottle.position, {
+        x: 0,
+        y: -0.5,
+        z: 0,
+      });
+
+      /*
+       * Three.js ROTATION
+       */
+      gsap.set(bottle.rotation, {
+        x: 0,
+        y: -0.18,
+        z: 0,
+      });
+
+      /*
+       * Three.js SCALE
+       */
+      gsap.set(bottle.scale, {
+        x: 0.08,
+        y: 0.08,
+        z: 0.08,
+      });
+
+      /*
+       * CAMERA
+       */
+      gsap.set(camera.position, {
+        x: 0,
+        y: 0,
+        z: 11,
+      });
+
+      camera.fov = 42;
+      camera.updateProjectionMatrix();
+
+      /*
+       * ============================================================
+       * TEXT INITIAL STATE
+       * ============================================================
+       */
+
+      gsap.set(".product-eyebrow", {
+        opacity: 0,
+        y: 30,
+      });
+
+      gsap.set(".product-title", {
+        opacity: 0,
+        y: 50,
+      });
+
+      gsap.set(".product-description", {
+        opacity: 0,
+        y: 30,
+      });
+
+      /*
+       * ============================================================
+       * SCROLL TIMELINE
+       * ============================================================
        */
 
       const timeline = gsap.timeline({
         scrollTrigger: {
           trigger: container.current,
-
           start: "top top",
-
           end: "bottom bottom",
-
-          scrub: 1.2,
-
-          pin: true,
-
-          anticipatePin: 1,
+          scrub: 1.1,
+          invalidateOnRefresh: true,
+          markers: false,
         },
       });
 
       /*
-       * ============================================
+       * ============================================================
        * PHASE 1
        *
-       * Bottle starts small and distant
-       * ============================================
+       * BOTTLE EMERGES
+       * ============================================================
        */
 
-      gsap.set(bottle.scale, {
-        x: 0.65,
-        y: 0.65,
-        z: 0.65,
-      });
+      timeline.to(
+        bottle.scale,
+        {
+          x: 0.48,
+          y: 0.48,
+          z: 0.48,
+          duration: 1.8,
+          ease: "power3.out",
+        },
+        0,
+      );
 
-      gsap.set(bottle.position, {
-        y: -0.2,
-      });
+      timeline.to(
+        bottle.position,
+        {
+          y: -0.05,
+          duration: 1.8,
+          ease: "power3.out",
+        },
+        0,
+      );
+
+      timeline.to(
+        bottle.rotation,
+        {
+          y: 0.08,
+          duration: 1.8,
+          ease: "power3.out",
+        },
+        0,
+      );
 
       /*
-       * ============================================
+       * ============================================================
        * PHASE 2
        *
-       * Bottle enters
-       * ============================================
+       * FULL BOTTLE HERO
+       * ============================================================
        */
 
       timeline.to(
         bottle.scale,
         {
-          x: 0.82,
-          y: 0.82,
-          z: 0.82,
-          duration: 1,
+          x: 0.52,
+          y: 0.52,
+          z: 0.52,
+          duration: 1.2,
           ease: "power2.out",
         },
-        0,
-      );
-
-      timeline.to(
-        bottle.position,
-        {
-          y: 0,
-          duration: 1,
-          ease: "power2.out",
-        },
-        0,
+        1.8,
       );
 
       /*
-       * ============================================
-       * PHASE 3
-       *
-       * Bottle rotates
-       * ============================================
+       * Slow cinematic rotation
        */
-
       timeline.to(
         bottle.rotation,
         {
-          y: Math.PI * 0.75,
-          x: 0.04,
-          duration: 1.8,
+          y: Math.PI * 0.32,
+          duration: 2.2,
           ease: "power1.inOut",
         },
-        0.8,
+        1.8,
       );
 
       /*
-       * ============================================
-       * PHASE 4
-       *
-       * Camera moves closer
-       * ============================================
+       * Slight camera movement
        */
-
       timeline.to(
         camera.position,
         {
-          z: 7.5,
-          y: 0.15,
-          duration: 1.4,
-          ease: "power2.inOut",
+          z: 10.4,
+          duration: 2.2,
+          ease: "power1.inOut",
         },
-        1.2,
+        1.8,
       );
 
       /*
-       * ============================================
-       * PHASE 5
+       * ============================================================
+       * PHASE 3
        *
-       * Show label
-       * ============================================
+       * LABEL REVEAL
+       * ============================================================
        */
 
       timeline.to(
         bottle.rotation,
         {
-          y: Math.PI * 2,
+          y: Math.PI * 0.06,
           duration: 1.5,
           ease: "power2.inOut",
         },
-        2.6,
+        4,
       );
 
       /*
-       * ============================================
-       * PHASE 6
+       * ============================================================
+       * PHASE 4
        *
-       * Cinematic close-up
-       * ============================================
+       * CAMERA PUSH
+       * ============================================================
        */
 
       timeline.to(
         camera.position,
         {
-          z: 5.8,
-          duration: 1.5,
+          z: 8.8,
+          y: 0.05,
+          duration: 2,
           ease: "power2.inOut",
         },
-        3.8,
+        5.5,
       );
-
-      /*
-       * ============================================
-       * PHASE 7
-       *
-       * Bottle slightly rises
-       * ============================================
-       */
-
-      timeline.to(
-        bottle.position,
-        {
-          y: 0.25,
-          duration: 1,
-          ease: "power2.out",
-        },
-        4.3,
-      );
-
-      /*
-       * ============================================
-       * PHASE 8
-       *
-       * Exit / prepare next section
-       * ============================================
-       */
 
       timeline.to(
         bottle.scale,
         {
-          x: 0.68,
-          y: 0.68,
-          z: 0.68,
-          duration: 1,
+          x: 0.57,
+          y: 0.57,
+          z: 0.57,
+          duration: 2,
+          ease: "power2.inOut",
         },
-        5.3,
+        5.5,
       );
 
       /*
-       * Refresh ScrollTrigger after
-       * Three.js has initialized.
+       * ============================================================
+       * PHASE 5
+       *
+       * PRODUCT STORY
+       * ============================================================
        */
 
+      timeline.to(
+        ".product-eyebrow",
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: "power3.out",
+        },
+        6.7,
+      );
+
+      timeline.to(
+        ".product-title",
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+        },
+        6.9,
+      );
+
+      timeline.to(
+        ".product-description",
+        {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+        },
+        7.2,
+      );
+
+      /*
+       * ============================================================
+       * PHASE 6
+       *
+       * CINEMATIC HOLD
+       * ============================================================
+       */
+
+      timeline.to(
+        bottle.rotation,
+        {
+          y: Math.PI * 0.1,
+          duration: 1.5,
+          ease: "none",
+        },
+        8.2,
+      );
+
+      /*
+       * ============================================================
+       * PHASE 7
+       *
+       * EXIT
+       * ============================================================
+       */
+
+      timeline.to(
+        ".product-copy",
+        {
+          opacity: 0,
+          y: -40,
+          duration: 1,
+          ease: "power2.in",
+        },
+        9.8,
+      );
+
+      timeline.to(
+        bottle.position,
+        {
+          y: 0.45,
+          x: 0.15,
+          duration: 1.5,
+          ease: "power2.inOut",
+        },
+        9.8,
+      );
+
+      timeline.to(
+        bottle.rotation,
+        {
+          y: Math.PI * 0.5,
+          duration: 1.5,
+          ease: "power2.inOut",
+        },
+        9.8,
+      );
+
+      timeline.to(
+        bottle.scale,
+        {
+          x: 0.42,
+          y: 0.42,
+          z: 0.42,
+          duration: 1.5,
+          ease: "power2.in",
+        },
+        9.8,
+      );
+
+      timeline.to(
+        camera.position,
+        {
+          z: 10.5,
+          duration: 1.5,
+          ease: "power2.in",
+        },
+        9.8,
+      );
+
+      /*
+       * Make ScrollTrigger recalculate after the scene
+       * has finished mounting.
+       */
       requestAnimationFrame(() => {
         ScrollTrigger.refresh();
       });
+
+      return () => {
+        timeline.scrollTrigger?.kill();
+        timeline.kill();
+      };
     },
     {
       scope: container,
+      dependencies: [sceneReady],
+      revertOnUpdate: true,
     },
   );
 
   return (
     <section
       ref={container}
-      id="product"
-      className="
-        relative
-        h-[600vh]
-        overflow-hidden
-        bg-black
-        text-white
-      "
+      className="relative h-[500vh] bg-[#050505] text-white"
     >
-      {/* =========================================
-          3D CANVAS
-          ========================================= */}
+      <div className="sticky top-0 h-screen overflow-hidden">
+        {/* =====================================================
+            ATMOSPHERE
+        ===================================================== */}
 
-      <div
-        className="
-          absolute
-          inset-0
-          z-0
-        "
-      >
-        <BottleScene bottleRef={bottleRef} cameraRef={cameraRef} />
-      </div>
+        <div className="pointer-events-none absolute inset-0 z-0">
+          <div
+            className="
+              absolute
+              left-1/2
+              top-1/2
+              h-[650px]
+              w-[650px]
+              -translate-x-1/2
+              -translate-y-1/2
+              rounded-full
+              bg-orange-500/[0.035]
+              blur-[140px]
+            "
+          />
 
-      {/* =========================================
-          ATMOSPHERIC GRADIENT
-          ========================================= */}
+          <div
+            className="
+              absolute
+              left-[12%]
+              top-[20%]
+              h-[300px]
+              w-[300px]
+              rounded-full
+              bg-blue-500/[0.025]
+              blur-[110px]
+            "
+          />
+        </div>
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          inset-0
-          z-10
-          bg-[radial-gradient(circle_at_center,transparent_20%,rgba(0,0,0,0.65)_100%)]
-        "
-      />
+        {/* =====================================================
+            3D SCENE
+        ===================================================== */}
 
-      {/* =========================================
-          TOP LABEL
-          ========================================= */}
+        <div className="absolute inset-0 z-10">
+          <BottleScene
+            bottleRef={bottleRef}
+            cameraRef={cameraRef}
+            onReady={handleSceneReady}
+          />
+        </div>
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          left-1/2
-          top-16
-          z-20
-          -translate-x-1/2
-          text-center
-        "
-      >
-        <p
+        {/* =====================================================
+            PRODUCT COPY
+        ===================================================== */}
+
+        <div
           className="
-            text-[10px]
-            uppercase
-            tracking-[0.6em]
-            text-white/40
+            product-copy
+            pointer-events-none
+            absolute
+            left-8
+            top-1/2
+            z-20
+            -translate-y-1/2
+            md:left-16
+            lg:left-24
           "
         >
-          The Spirit
-        </p>
-      </div>
+          <p
+            className="
+              product-eyebrow
+              translate-y-8
+              text-[10px]
+              uppercase
+              tracking-[0.55em]
+              text-white/40
+              opacity-0
+            "
+          >
+            KAAL / 01
+          </p>
 
-      {/* =========================================
-          PRODUCT COPY
-          ========================================= */}
+          <h2
+            className="
+              product-title
+              mt-5
+              max-w-[280px]
+              translate-y-12
+              text-4xl
+              font-medium
+              leading-[0.95]
+              tracking-tight
+              text-white
+              opacity-0
+              md:text-6xl
+            "
+          >
+            The Spirit
+            <span className="block text-white/35">of the Monsoon.</span>
+          </h2>
 
-      <div
-        className="
-          pointer-events-none
-          absolute
-          bottom-14
-          left-8
-          z-20
-          max-w-xs
-        "
-      >
-        <p
+          <p
+            className="
+              product-description
+              mt-7
+              max-w-[300px]
+              translate-y-8
+              text-sm
+              leading-relaxed
+              text-white/45
+              opacity-0
+            "
+          >
+            Born from rain.
+            <br />
+            Distilled in fire.
+            <br />
+            <br />A spirit shaped by the rhythm of Maharashtras monsoon.
+          </p>
+        </div>
+
+        {/* =====================================================
+            UI
+        ===================================================== */}
+
+        <div
           className="
+            absolute
+            left-6
+            top-24
+            z-20
             text-[10px]
             uppercase
             tracking-[0.45em]
             text-white/30
           "
         >
-          KAAL
-        </p>
+          The Spirit
+        </div>
 
-        <p
+        <div
           className="
-            mt-4
-            text-sm
-            leading-relaxed
-            text-white/50
-          "
-        >
-          Born from rain.
-          <br />
-          Distilled in fire.
-        </p>
-      </div>
-
-      {/* =========================================
-          PROGRESS
-          ========================================= */}
-
-      <div
-        className="
-          absolute
-          bottom-14
-          right-8
-          z-20
-          text-[10px]
-          uppercase
-          tracking-[0.4em]
-          text-white/30
-        "
-      >
-        04 / 07
-      </div>
-
-      {/* =========================================
-          SCROLL INDICATOR
-          ========================================= */}
-
-      <div
-        className="
-          pointer-events-none
-          absolute
-          bottom-8
-          left-1/2
-          z-20
-          flex
-          -translate-x-1/2
-          flex-col
-          items-center
-          gap-2
-        "
-      >
-        <span
-          className="
-            text-[9px]
+            absolute
+            right-6
+            top-24
+            z-20
+            text-[10px]
             uppercase
-            tracking-[0.4em]
+            tracking-[0.45em]
             text-white/30
           "
         >
-          Scroll
-        </span>
+          04 / 07
+        </div>
 
-        <span
+        <div
           className="
-            h-8
-            w-px
-            bg-white/20
+            absolute
+            bottom-8
+            left-6
+            z-20
+            text-[10px]
+            uppercase
+            tracking-[0.4em]
+            text-white/25
+          "
+        >
+          KAAL — THE SPIRIT
+        </div>
+
+        <div
+          className="
+            absolute
+            bottom-8
+            right-6
+            z-20
+            text-[10px]
+            uppercase
+            tracking-[0.4em]
+            text-white/25
+          "
+        >
+          SCROLL TO EXPLORE
+        </div>
+
+        {/* =====================================================
+            VIGNETTE
+        ===================================================== */}
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+            z-20
+            shadow-[inset_0_0_180px_rgba(0,0,0,0.85)]
           "
         />
+
+        {/* =====================================================
+            LOADING
+        ===================================================== */}
+
+        {!sceneReady && (
+          <div
+            className="
+              pointer-events-none
+              absolute
+              bottom-20
+              left-1/2
+              z-40
+              -translate-x-1/2
+              text-[9px]
+              uppercase
+              tracking-[0.4em]
+              text-white/20
+            "
+          >
+            Initializing
+          </div>
+        )}
       </div>
     </section>
   );

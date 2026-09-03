@@ -1,0 +1,103 @@
+<svg
+  width="1024"
+  height="768"
+  viewBox="0 0 1024 768"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <rect
+    width="1024"
+    height="768"
+    fill="#eee7da"
+  />
+
+  <rect
+    x="28"
+    y="28"
+    width="968"
+    height="712"
+    rx="10"
+    fill="#eee7da"
+    stroke="#a27f48"
+    stroke-width="10"
+  />
+
+  <rect
+    x="52"
+    y="52"
+    width="920"
+    height="664"
+    rx="6"
+    fill="#f4eee3"
+    stroke="#151515"
+    stroke-width="5"
+  />
+
+  <text
+    x="512"
+    y="180"
+    text-anchor="middle"
+    font-family="Georgia, serif"
+    font-size="42"
+    letter-spacing="14"
+    fill="#292621"
+  >
+    THE SPIRIT
+  </text>
+
+  <text
+    x="512"
+    y="365"
+    text-anchor="middle"
+    font-family="Georgia, serif"
+    font-size="150"
+    letter-spacing="20"
+    fill="#111111"
+  >
+    KAAL
+  </text>
+
+  <line
+    x1="330"
+    y1="425"
+    x2="694"
+    y2="425"
+    stroke="#a27f48"
+    stroke-width="8"
+  />
+
+  <text
+    x="512"
+    y="505"
+    text-anchor="middle"
+    font-family="Arial, sans-serif"
+    font-size="30"
+    letter-spacing="8"
+    fill="#403c35"
+  >
+    SPIRITS OF THE MONSOON
+  </text>
+
+  <text
+    x="512"
+    y="585"
+    text-anchor="middle"
+    font-family="Arial, sans-serif"
+    font-size="24"
+    letter-spacing="7"
+    fill="#777066"
+  >
+    SMALL BATCH • PUNE • INDIA
+  </text>
+
+  <text
+    x="512"
+    y="655"
+    text-anchor="middle"
+    font-family="Georgia, serif"
+    font-size="20"
+    letter-spacing="5"
+    fill="#777066"
+  >
+    BORN FROM RAIN · DISTILLED IN FIRE
+  </text>
+</svg>
