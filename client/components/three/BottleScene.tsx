@@ -144,7 +144,7 @@ export default function BottleScene({
 
       <pointLight
         position={[4.5, 2.5, 3]}
-        intensity={12}
+        intensity={7}
         distance={12}
         decay={2}
         color="#ff9d45"
@@ -156,7 +156,7 @@ export default function BottleScene({
 
       <pointLight
         position={[-4.5, 2.5, 3]}
-        intensity={9}
+        intensity={5}
         distance={11}
         decay={2}
         color="#729cff"
@@ -212,7 +212,7 @@ export default function BottleScene({
 
       <Environment preset="studio" environmentIntensity={0.2} />
 
-      <MonsoonMist />
+      {/* <MonsoonMist /> */}
 
       <MonsoonRain />
       {/* ======================================================

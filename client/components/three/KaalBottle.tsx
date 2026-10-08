@@ -66,31 +66,30 @@ const KaalBottle = forwardRef<THREE.Group>(function KaalBottle(_, ref) {
     () =>
       new THREE.MeshPhysicalMaterial({
         color: "#d7d1c5",
-        roughness: 0.12,
+        roughness: 0.08,
         metalness: 0.02,
-        transmission: 0.15,
+        transmission: 0.2,
         transparent: true,
-        opacity: 0.26,
+        opacity: 0.34,
         clearcoat: 1,
-        clearcoatRoughness: 0.08,
+        clearcoatRoughness: 0.06,
         ior: 1.45,
-        thickness: 0.08,
+        thickness: 0.1,
         side: THREE.DoubleSide,
       }),
     [],
   );
-
   const liquidMaterial = useMemo(
     () =>
       new THREE.MeshPhysicalMaterial({
-        color: "#8c3f0d",
-        roughness: 0.18,
+        color: "#6f2d0b",
+        roughness: 0.16,
         metalness: 0,
-        transmission: 0.05,
+        transmission: 0.04,
         transparent: true,
         opacity: 0.94,
-        clearcoat: 0.45,
-        clearcoatRoughness: 0.16,
+        clearcoat: 0.5,
+        clearcoatRoughness: 0.14,
         side: THREE.DoubleSide,
       }),
     [],
@@ -166,8 +165,11 @@ const KaalBottle = forwardRef<THREE.Group>(function KaalBottle(_, ref) {
       {/* =========================================
             GLASS SHOULDERS
         ========================================= */}
-
-      <mesh position={[0, 2.55, 0]} material={glassMaterial}>
+      <mesh
+        position={[0, 2.52, 0]}
+        scale={[0.92, 0.72, 0.92]}
+        material={glassMaterial}
+      >
         <sphereGeometry args={[1.18, 64, 32]} />
       </mesh>
 
@@ -263,10 +265,6 @@ const KaalBottle = forwardRef<THREE.Group>(function KaalBottle(_, ref) {
             SMALL GOLD BASE DETAIL
             NOT A FULL RING
         ========================================= */}
-
-      <mesh position={[0, -2.49, 0]} material={metalMaterial}>
-        <cylinderGeometry args={[1.12, 1.12, 0.035, 64]} />
-      </mesh>
     </group>
   );
 });
