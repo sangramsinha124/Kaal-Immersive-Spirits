@@ -1,174 +1,165 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useRef } from "react";
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const ingredients = [
   {
     number: "01",
-    name: "Juniper",
-    notes: "Resinous · Dry · Evergreen",
+    name: "Black Pepper",
+    notes: "Bold · Warm",
+    image:
+      "https://images.unsplash.com/photo-1506085621370-98b475435879?auto=format&fit=crop&w=900&q=80",
+    position: "center",
   },
   {
     number: "02",
     name: "Cardamom",
-    notes: "Warm · Aromatic · Spiced",
+    notes: "Aromatic · Bright",
+    image:
+      "https://images.unsplash.com/photo-1758657996330-095d08451cd9?auto=format&fit=crop&w=900&q=80",
+    position: "center",
   },
   {
     number: "03",
-    name: "Orange Peel",
-    notes: "Bright · Bitter · Citrus",
+    name: "Tulsi",
+    notes: "Sacred · Herbal",
+    image:
+      "https://images.unsplash.com/photo-1664289283342-7dfd936b4b99?auto=format&fit=crop&w=900&q=80",
+    position: "center 58%",
   },
   {
     number: "04",
     name: "Ginger",
-    notes: "Sharp · Warm · Earthy",
-  },
-  {
-    number: "05",
-    name: "Coriander",
-    notes: "Green · Floral · Peppery",
+    notes: "Zesty · Grounding",
+    image:
+      "https://images.unsplash.com/photo-1635843104103-ddd88e1c5141?auto=format&fit=crop&w=900&q=80",
+    position: "center",
   },
 ];
 
 export default function Ingredients() {
   const container = useRef<HTMLElement>(null);
 
-  useLayoutEffect(() => {
-    const section = container.current;
+  useGSAP(
+    () => {
+      const section = container.current;
 
-    if (!section) return;
+      if (!section) return;
 
-    const ctx = gsap.context(() => {
       const eyebrow = section.querySelector(".botanical-eyebrow");
       const heading = section.querySelector(".botanical-heading");
       const items = gsap.utils.toArray<HTMLElement>(".botanical-item");
 
-      gsap.set([eyebrow, heading, items], {
+      gsap.from([eyebrow, heading], {
         opacity: 0,
-        y: 35,
-      });
-
-      const timeline = gsap.timeline({
+        y: 24,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "power3.out",
         scrollTrigger: {
           trigger: section,
-          start: "top 70%",
-          end: "top 25%",
-          scrub: 1,
+          start: "top 72%",
+          once: true,
         },
       });
 
-      timeline
-        .to(eyebrow, {
-          opacity: 1,
-          y: 0,
-          duration: 0.4,
-        })
-        .to(
-          heading,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.7,
-          },
-          "-=0.2",
-        )
-        .to(
-          items,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.65,
-            stagger: 0.12,
-          },
-          "-=0.35",
-        );
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
+      gsap.from(items, {
+        opacity: 0,
+        y: 32,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 62%",
+          once: true,
+        },
+      });
+    },
+    { scope: container },
+  );
 
   return (
     <section
       ref={container}
       id="ingredients"
-      className="relative overflow-hidden bg-[#070707] px-6 py-32 text-white md:py-44"
+      className="relative overflow-hidden bg-[#070707] px-6 py-24 text-white sm:px-10 md:py-32"
+      aria-labelledby="botanical-heading"
     >
-      <div className="mx-auto max-w-7xl">
-        {/* HEADER */}
-        <div className="max-w-5xl">
-          <p className="botanical-eyebrow mb-8 text-[10px] uppercase tracking-[0.5em] text-white/35 md:text-xs">
+      <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="flex items-center justify-between">
+          <p className="botanical-eyebrow text-[10px] uppercase tracking-[0.5em] text-white/35">
             The Botanicals
           </p>
-
-          <h2 className="botanical-heading text-5xl font-light leading-[0.92] tracking-[-0.04em] md:text-7xl lg:text-[8rem]">
-            Gathered from
-            <span className="block text-white/30">the wild.</span>
-          </h2>
+          <p className="text-[9px] uppercase tracking-[0.35em] text-white/30">
+            03 / 07
+          </p>
         </div>
 
-        {/* BOTANICAL LIST */}
-        <div className="mt-24 border-t border-white/10 md:mt-32">
+        <div className="mt-9 flex flex-col justify-between gap-6 border-b border-white/10 pb-9 md:mt-12 md:flex-row md:items-end md:pb-12">
+          <h2
+            id="botanical-heading"
+            className="botanical-heading max-w-3xl text-4xl font-light leading-[0.98] tracking-[-0.045em] sm:text-5xl md:text-6xl"
+          >
+            Nature&apos;s finest.
+            <span className="block text-white/35">Thoughtfully chosen.</span>
+          </h2>
+          <p className="max-w-xs text-xs leading-6 text-white/35 md:pb-1 md:text-sm">
+            Four botanicals, gathered for their character and the depth they
+            bring to every drop.
+          </p>
+        </div>
+
+        <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:mt-10 md:grid-cols-4 md:gap-x-8">
           {ingredients.map((ingredient) => (
-            <div
-              key={ingredient.name}
-              className="botanical-item group border-b border-white/10"
-            >
-              <div className="flex min-h-[120px] items-center gap-5 py-7 md:min-h-[150px] md:gap-10 md:py-8">
-                {/* NUMBER */}
-                <span className="w-8 shrink-0 text-[10px] tracking-[0.3em] text-white/25 md:w-12 md:text-xs">
+            <article key={ingredient.name} className="botanical-item group">
+              <div className="relative aspect-[0.92] overflow-hidden bg-[#10110f] sm:aspect-[1.05]">
+                <div
+                  className="absolute inset-0 bg-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+                  style={{
+                    backgroundImage: `url('${ingredient.image}')`,
+                    backgroundPosition: ingredient.position,
+                  }}
+                  role="img"
+                  aria-label={ingredient.name}
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/5 to-black/10 opacity-80 transition-opacity duration-500 group-hover:opacity-50"
+                  aria-hidden="true"
+                />
+                <span className="absolute left-3 top-3 text-[9px] tracking-[0.25em] text-white/70 sm:left-4 sm:top-4">
                   {ingredient.number}
                 </span>
+              </div>
 
-                {/* LINE */}
-                <span className="hidden h-px w-12 shrink-0 bg-white/15 transition-all duration-500 group-hover:w-20 group-hover:bg-white/40 md:block" />
-
-                {/* NAME */}
-                <h3 className="min-w-0 flex-1 text-3xl font-light tracking-[-0.025em] transition-transform duration-500 group-hover:translate-x-2 md:text-5xl lg:text-6xl">
+              <div className="mt-4 flex items-start justify-between gap-2 sm:mt-5">
+                <h3 className="text-lg font-light tracking-[-0.025em] sm:text-xl md:text-2xl">
                   {ingredient.name}
                 </h3>
-
-                {/* NOTES */}
-                <p className="hidden text-right text-[10px] uppercase tracking-[0.25em] text-white/30 md:block md:w-[260px] lg:w-[320px]">
-                  {ingredient.notes}
-                </p>
-
-                {/* ARROW */}
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 text-white/25 transition-all duration-500 group-hover:border-white/30 group-hover:text-white/70">
-                  <span className="text-sm transition-transform duration-500 group-hover:translate-x-0.5">
-                    →
-                  </span>
+                <span
+                  aria-hidden="true"
+                  className="mt-1 text-sm text-white/30 transition-transform duration-300 group-hover:translate-x-1 group-hover:text-white/70"
+                >
+                  ↗
                 </span>
               </div>
-
-              {/* MOBILE NOTES */}
-              <div className="pb-7 pl-[52px] md:hidden">
-                <p className="text-[9px] uppercase tracking-[0.25em] text-white/30">
-                  {ingredient.notes}
-                </p>
-              </div>
-            </div>
+              <p className="mt-2 text-[8px] uppercase tracking-[0.22em] text-white/35 sm:text-[9px] sm:tracking-[0.28em]">
+                {ingredient.notes}
+              </p>
+            </article>
           ))}
         </div>
 
-        {/* FOOTNOTE */}
-        <div className="mt-10 flex items-center justify-between text-[9px] uppercase tracking-[0.35em] text-white/25">
-          <span>Five botanicals</span>
-
-          <span className="hidden md:block">Selected for the spirit</span>
+        <div className="mt-10 flex items-center justify-between border-t border-white/10 pt-5 text-[9px] uppercase tracking-[0.35em] text-white/25">
+          <span>Four botanicals</span>
+          <span>Selected for the spirit</span>
         </div>
       </div>
-
-      {/* SUBTLE BACKGROUND DETAIL */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-40 top-1/3 h-[500px] w-[500px] rounded-full border border-white/[0.025]"
-      />
-
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -right-20 top-[38%] h-[340px] w-[340px] rounded-full border border-white/[0.02]"
-      />
     </section>
   );
 }
