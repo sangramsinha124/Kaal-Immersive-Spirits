@@ -110,6 +110,16 @@ export default function Product() {
         y: 30,
       });
 
+      gsap.set(".product-actions", {
+        opacity: 0,
+        y: 20,
+      });
+
+      gsap.set(".product-metrics", {
+        opacity: 0,
+        y: 18,
+      });
+
       /*
        * ============================================================
        * SCROLL TIMELINE
@@ -303,6 +313,28 @@ export default function Product() {
         7.2,
       );
 
+      timeline.to(
+        ".product-actions",
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+        },
+        7.45,
+      );
+
+      timeline.to(
+        ".product-metrics",
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+        },
+        7.7,
+      );
+
       /*
        * ============================================================
        * PHASE 6
@@ -335,6 +367,28 @@ export default function Product() {
           opacity: 0,
           y: -40,
           duration: 1,
+          ease: "power2.in",
+        },
+        9.8,
+      );
+
+      timeline.to(
+        ".product-actions",
+        {
+          opacity: 0,
+          y: -18,
+          duration: 0.8,
+          ease: "power2.in",
+        },
+        9.8,
+      );
+
+      timeline.to(
+        ".product-metrics",
+        {
+          opacity: 0,
+          y: -18,
+          duration: 0.8,
           ease: "power2.in",
         },
         9.8,
@@ -467,6 +521,7 @@ export default function Product() {
             left-8
             top-1/2
             z-20
+            max-w-[420px]
             -translate-y-1/2
             md:left-16
             lg:left-24
@@ -478,71 +533,111 @@ export default function Product() {
               translate-y-8
               text-[10px]
               uppercase
-              tracking-[0.55em]
-              text-white/40
+              tracking-[0.6em]
+              text-[#f7d7b0]
               opacity-0
             "
           >
-            KAAL / 01
+            KAAL / Monsoon Edition
           </p>
 
           <h2
             className="
               product-title
               mt-5
-              max-w-[280px]
+              max-w-[320px]
               translate-y-12
               text-4xl
               font-medium
-              leading-[0.95]
-              tracking-tight
+              leading-[0.9]
+              tracking-[-0.06em]
               text-white
               opacity-0
               md:text-6xl
             "
           >
             The Spirit
-            <span className="block text-white/35">of the Monsoon.</span>
+            <span className="block text-white/40">of the Monsoon.</span>
           </h2>
 
           <p
             className="
               product-description
               mt-7
-              max-w-[300px]
+              max-w-[340px]
               translate-y-8
               text-sm
               leading-relaxed
-              text-white/45
+              text-white/65
               opacity-0
+              md:text-base
             "
           >
             Born from rain.
             <br />
             Distilled in fire.
             <br />
-            <br />A spirit shaped by the rhythm of Maharashtras monsoon.
+            <br />A rich, layered spirit shaped by the rhythm of
+            Maharashtra&apos;s monsoon.
           </p>
+
+          <div className="product-actions pointer-events-auto mt-8 flex flex-wrap items-center gap-3 opacity-0">
+            <a
+              href="#reserve"
+              className="inline-flex items-center justify-center rounded-full border border-[#d9a35b]/70 bg-[#d9a35b] px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.25em] text-[#1b120f] transition duration-300 hover:-translate-y-0.5 hover:bg-[#e7b56d]"
+            >
+              Reserve Bottles
+            </a>
+            <a
+              href="#notes"
+              className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/4 px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.25em] text-white/80 backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-[#d9a35b]/60 hover:text-[#f2d4a6]"
+            >
+              Explore Notes
+            </a>
+          </div>
+
+          <ul className="product-metrics mt-8 grid max-w-[360px] grid-cols-3 gap-3 opacity-0">
+            {[
+              ["ABV", "44%"],
+              ["Origin", "Maharashtra"],
+              ["Batch", "01 / Rain"],
+            ].map(([label, value]) => (
+              <li
+                key={label}
+                className="rounded-2xl border border-white/10 bg-white/[0.03] px-3 py-3 backdrop-blur-sm"
+              >
+                <span className="block text-[9px] uppercase tracking-[0.25em] text-white/40">
+                  {label}
+                </span>
+                <span className="mt-2 block text-sm font-medium text-white/90">
+                  {value}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* =====================================================
             UI
         ===================================================== */}
 
-        <div
+        {/* <div
           className="
-            absolute
-            left-6
-            top-24
-            z-20
-            text-[10px]
-            uppercase
-            tracking-[0.45em]
-            text-white/30
-          "
+    pointer-events-none
+    absolute
+    left-6
+    top-24
+    z-20
+    hidden
+    text-[10px]
+    uppercase
+    tracking-[0.45em]
+    text-white/30
+    md:block
+  "
         >
           The Spirit
-        </div>
+        </div> */}
 
         <div
           className="

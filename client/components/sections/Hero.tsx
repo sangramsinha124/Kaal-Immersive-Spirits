@@ -3,18 +3,20 @@
 import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 export default function Hero() {
   const container = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
-      // ============================================
-      // 1. PAGE LOAD ANIMATION
-      // ============================================
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        return;
+      }
+
+      const titleLetters = container.current?.querySelectorAll(
+        ".hero-title-char",
+      );
+      const clouds = container.current?.querySelectorAll(".hero-cloud-bank");
 
       const introTimeline = gsap.timeline({
         defaults: {
@@ -23,262 +25,154 @@ export default function Hero() {
       });
 
       introTimeline
-        .from(".hero-eyebrow", {
+        .from(titleLetters ?? [], {
           opacity: 0,
-          y: 20,
-          duration: 1,
+          yPercent: 110,
+          rotateX: -75,
+          filter: "blur(12px)",
+          stagger: 0.12,
+          duration: 1.45,
+          ease: "power4.out",
         })
-        .from(
-          ".hero-title",
-          {
-            opacity: 0,
-            y: 80,
-            scale: 0.95,
-            duration: 1.4,
-          },
-          "-=0.5",
-        )
         .from(
           ".hero-tagline",
           {
             opacity: 0,
-            y: 30,
-            duration: 1,
+            y: 14,
+            duration: 0.8,
           },
-          "-=0.8",
+          "-=0.55",
         )
         .from(
-          ".hero-button",
+          ".hero-meta",
           {
             opacity: 0,
-            y: 30,
-            duration: 1,
+            y: 8,
+            duration: 0.7,
           },
-          "-=0.6",
-        )
-        .from(
-          ".hero-scroll",
-          {
-            opacity: 0,
-            duration: 1,
-          },
-          "-=0.4",
+          "-=0.35",
         );
 
-      // ============================================
-      // 2. ATMOSPHERIC GLOW
-      // ============================================
+      if (clouds?.[0]) {
+        gsap.to(clouds[0], {
+          xPercent: 4,
+          yPercent: -2,
+          scale: 1.08,
+          duration: 30,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      }
 
-      gsap.to(".hero-glow", {
-        scale: 1.15,
-        opacity: 0.7,
-        duration: 5,
+      if (clouds?.[1]) {
+        gsap.to(clouds[1], {
+          xPercent: -5,
+          yPercent: 2,
+          scale: 1.06,
+          duration: 38,
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+        });
+      }
+
+      gsap.to(".hero-moonlight", {
+        opacity: 0.85,
+        scale: 1.12,
+        duration: 8,
         repeat: -1,
         yoyo: true,
         ease: "sine.inOut",
       });
-
-      // ============================================
-      // 3. CENTER LINE
-      // ============================================
-
-      gsap.to(".hero-line", {
-        scaleY: 1,
-        transformOrigin: "top center",
-        duration: 2,
-        delay: 2,
-        ease: "power2.inOut",
-      });
-
-      // ============================================
-      // 4. SCROLL STORY
-      // ============================================
-
-      const scrollTimeline = gsap.timeline({
-        scrollTrigger: {
-          trigger: container.current,
-          start: "top top",
-          end: "bottom bottom",
-          scrub: 1,
-        },
-      });
-
-      scrollTimeline
-        // KAAL gets smaller
-        .to(
-          ".hero-title",
-          {
-            scale: 0.45,
-            y: -180,
-            opacity: 0.25,
-            letterSpacing: "0.25em",
-            duration: 1,
-          },
-          0,
-        )
-
-        // Eyebrow disappears
-        .to(
-          ".hero-eyebrow",
-          {
-            y: -100,
-            opacity: 0,
-            duration: 1,
-          },
-          0,
-        )
-
-        // Tagline disappears
-        .to(
-          ".hero-tagline",
-          {
-            y: -80,
-            opacity: 0,
-            duration: 1,
-          },
-          0,
-        )
-
-        // Button moves away
-        .to(
-          ".hero-button",
-          {
-            y: 100,
-            opacity: 0,
-            duration: 1,
-          },
-          0,
-        )
-
-        // Scroll indicator disappears
-        .to(
-          ".hero-scroll",
-          {
-            opacity: 0,
-            duration: 0.5,
-          },
-          0,
-        )
-
-        // Glow expands and disappears
-        .to(
-          ".hero-glow",
-          {
-            scale: 2,
-            opacity: 0,
-            duration: 1,
-          },
-          0,
-        );
     },
     {
       scope: container,
     },
   );
 
-  const scrollToNext = () => {
-    const nextSection = document.getElementById("story");
-
-    if (nextSection) {
-      nextSection.scrollIntoView({
-        behavior: "smooth",
-      });
-    }
-  };
-
   return (
     <section
       ref={container}
-      className="hero-section relative flex min-h-[180vh] items-start justify-center overflow-hidden bg-black"
+      className="hero-section relative flex min-h-svh items-center justify-center overflow-hidden bg-black"
+      aria-label="KAAL — The Spirit of the Monsoon"
     >
-      {/* ============================================
-          FILM GRAIN
-      ============================================ */}
-
-      <div className="pointer-events-none absolute inset-0 z-0 opacity-[0.035]">
-        <div
-          className="h-full w-full"
-          style={{
-            backgroundImage:
-              "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.5'/%3E%3C/svg%3E\")",
-          }}
-        />
-      </div>
-
-      {/* ============================================
-          ATMOSPHERIC GLOW
-      ============================================ */}
-
       <div
-        className="hero-glow pointer-events-none absolute left-1/2 top-1/2 z-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full opacity-40 blur-[120px]"
+        className="absolute inset-0 bg-cover bg-[center_52%]"
+        style={{
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1469106233956-20341cc41f8b?auto=format&fit=crop&w=2400&q=85')",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="hero-moonlight pointer-events-none absolute -top-[18%] left-1/2 z-[1] h-[min(92vw,900px)] w-[min(92vw,900px)] -translate-x-1/2 rounded-full opacity-65 blur-3xl"
         style={{
           background:
-            "radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%)",
+            "radial-gradient(ellipse at 50% 48%, rgba(202,220,255,0.3) 0%, rgba(153,184,230,0.13) 23%, rgba(110,145,197,0.06) 43%, transparent 68%)",
         }}
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute -top-[8%] left-1/2 z-[1] h-[78%] w-[min(100vw,1200px)] -translate-x-1/2 opacity-50 blur-2xl"
+        style={{
+          background:
+            "conic-gradient(from 165deg at 50% 0%, transparent 0deg, rgba(196,216,255,0.08) 18deg, transparent 35deg, rgba(196,216,255,0.055) 48deg, transparent 68deg)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="hero-cloud-bank pointer-events-none absolute -left-[12%] top-[6%] z-[2] h-[68%] w-[124%] opacity-35 blur-2xl mix-blend-screen"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse at 18% 48%, rgba(191,204,221,0.36) 0%, transparent 36%), radial-gradient(ellipse at 40% 28%, rgba(211,221,236,0.28) 0%, transparent 33%), radial-gradient(ellipse at 66% 44%, rgba(181,198,221,0.3) 0%, transparent 38%), radial-gradient(ellipse at 88% 26%, rgba(205,216,233,0.25) 0%, transparent 32%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="hero-cloud-bank pointer-events-none absolute -bottom-[12%] -left-[10%] z-[2] h-[58%] w-[120%] opacity-40 blur-3xl mix-blend-screen"
+        style={{
+          backgroundImage:
+            "radial-gradient(ellipse at 14% 62%, rgba(182,197,215,0.34) 0%, transparent 34%), radial-gradient(ellipse at 38% 72%, rgba(204,215,231,0.23) 0%, transparent 38%), radial-gradient(ellipse at 68% 58%, rgba(174,193,218,0.3) 0%, transparent 38%), radial-gradient(ellipse at 92% 72%, rgba(205,216,230,0.27) 0%, transparent 34%)",
+        }}
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-0 z-[3] bg-[linear-gradient(180deg,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.12)_42%,rgba(0,0,0,0.2)_62%,rgba(0,0,0,0.62)_100%)]"
+        aria-hidden="true"
+      />
+      <div
+        className="pointer-events-none absolute inset-0 z-[4] bg-[radial-gradient(ellipse_at_center,transparent_10%,rgba(0,0,0,0.24)_100%)]"
+        aria-hidden="true"
       />
 
-      {/* ============================================
-          CENTER LINE
-      ============================================ */}
-
-      <div className="pointer-events-none absolute left-1/2 top-0 z-0 hidden h-full -translate-x-1/2 md:block">
-        <div className="hero-line h-full w-px scale-y-0 bg-white/10" />
-      </div>
-
-      {/* ============================================
-          MAIN CONTENT
-      ============================================ */}
-
-      <div className="hero-content sticky top-0 z-10 flex h-screen items-center justify-center px-6 text-center">
-        <div>
-          {/* Eyebrow */}
-
-          <p className="hero-eyebrow mb-8 text-xs uppercase tracking-[0.65em] text-white/50 md:text-sm">
-            Spirits of the Monsoon
-          </p>
-
-          {/* Title */}
-
-          <h1 className="hero-title text-[clamp(5rem,15vw,13rem)] font-semibold leading-[0.8] tracking-[0.08em] text-white">
-            KAAL
-          </h1>
-
-          {/* Tagline */}
-
-          <p className="hero-tagline mt-10 text-base text-white/60 md:text-xl">
-            Born from rain. Distilled in fire.
-          </p>
-
-          {/* CTA */}
-
-          <button
-            onClick={scrollToNext}
-            className="hero-button group relative mt-12 overflow-hidden rounded-full border border-white/20 px-10 py-5 text-xs uppercase tracking-[0.35em] text-white transition-all duration-500 hover:border-white/60"
+      <div className="hero-content relative z-[5] flex min-h-svh w-full items-center justify-center px-6 pb-8 pt-20 text-center">
+        <div className="-mt-4">
+          <h1
+            className="hero-title font-serif text-[clamp(5rem,17vw,14rem)] font-normal leading-[0.78] tracking-[0.035em] text-white drop-shadow-[0_4px_32px_rgba(0,0,0,0.35)]"
+            style={{ perspective: "1000px" }}
           >
-            <span className="relative z-10 transition-colors duration-500 group-hover:text-black">
-              Enter the experience
-            </span>
-
-            <span className="absolute inset-0 origin-bottom scale-y-0 bg-white transition-transform duration-500 group-hover:scale-y-100" />
-          </button>
+            <span className="sr-only">KAAL</span>
+            {"KAAL".split("").map((letter, index) => (
+              <span
+                className="hero-title-char inline-block"
+                aria-hidden="true"
+                key={`${letter}-${index}`}
+              >
+                {letter}
+              </span>
+            ))}
+          </h1>
+          <p className="hero-tagline mt-7 text-[9px] font-medium uppercase tracking-[0.42em] text-white/85 sm:mt-9 sm:text-[10px] sm:tracking-[0.55em]">
+            The Spirit of the Monsoon
+          </p>
         </div>
       </div>
 
-      {/* ============================================
-          SCROLL INDICATOR
-      ============================================ */}
-
-      <button
-        onClick={scrollToNext}
-        className="hero-scroll absolute bottom-10 left-1/2 z-20 flex -translate-x-1/2 flex-col items-center gap-3 text-white/40 transition-colors hover:text-white"
-        aria-label="Scroll to explore"
-      >
-        <span className="text-[9px] uppercase tracking-[0.4em]">Scroll</span>
-
-        <span className="h-10 w-px overflow-hidden bg-white/10">
-          <span className="block h-1/2 w-full origin-top animate-pulse bg-white/70" />
-        </span>
-      </button>
+      <div className="hero-meta absolute inset-x-6 bottom-7 z-10 flex items-center justify-between text-[8px] uppercase tracking-[0.28em] text-white/65 sm:inset-x-10 sm:bottom-9 sm:text-[9px] sm:tracking-[0.35em]">
+        <span>Spirit of the Monsoon</span>
+        <span>01 / 07</span>
+      </div>
     </section>
   );
 }
