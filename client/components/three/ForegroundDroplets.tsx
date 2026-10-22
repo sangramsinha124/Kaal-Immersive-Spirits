@@ -21,7 +21,7 @@ export default function ForegroundDroplets() {
 
       z: 3.2 + seeded(index * 3 + 2) * 1.5,
 
-      scale: 0.025 + seeded(index * 7) * 0.045,
+      scale: 0.012 + seeded(index * 7) * 0.025,
     }));
   }, []);
 
@@ -47,12 +47,12 @@ export default function ForegroundDroplets() {
           <sphereGeometry args={[1, 12, 12]} />
 
           <meshPhysicalMaterial
-            color="#d9e7f2"
+            color="#d4a06a"
             transparent
-            opacity={0.22}
-            roughness={0.05}
+            opacity={0.1}
+            roughness={0.22}
             metalness={0}
-            transmission={0.2}
+            transmission={0.06}
             depthWrite={false}
           />
         </mesh>

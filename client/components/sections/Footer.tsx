@@ -6,34 +6,47 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const footerLinks = [
+  { label: "The story", href: "#story" },
+  { label: "Botanicals", href: "#ingredients" },
+  { label: "The spirit", href: "#manifesto" },
+  { label: "Cocktails", href: "#cocktails" },
+];
+
 export default function Footer() {
   const footer = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
     const section = footer.current;
-
     if (!section) return;
 
     const ctx = gsap.context(() => {
-      const content = section.querySelector(".footer-content");
-      const line = section.querySelector(".footer-line");
-      const bottom = section.querySelector(".footer-bottom");
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-      gsap.set([content, line, bottom], {
+      const content = section.querySelectorAll(".footer-reveal");
+
+      gsap.from(content, {
         opacity: 0,
-        y: 20,
-      });
-
-      gsap.to([content, line, bottom], {
-        opacity: 1,
-        y: 0,
+        y: 22,
+        stagger: 0.1,
         duration: 0.8,
-        stagger: 0.12,
         ease: "power2.out",
         scrollTrigger: {
           trigger: section,
-          start: "top 85%",
-          toggleActions: "play none none reverse",
+          start: "top 88%",
+          once: true,
+        },
+      });
+
+      gsap.from(section.querySelector(".footer-wordmark"), {
+        opacity: 0,
+        y: 34,
+        duration: 1.1,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: section,
+          start: "top 88%",
+          once: true,
         },
       });
     }, section);
@@ -44,61 +57,72 @@ export default function Footer() {
   return (
     <footer
       ref={footer}
-      className="relative overflow-hidden bg-[#050505] px-6 pb-8 pt-20 text-white md:pb-10 md:pt-28"
+      className="relative isolate overflow-hidden bg-[#070706] px-6 pb-7 pt-16 text-white sm:px-10 sm:pt-20 md:pb-10 md:pt-24"
     >
-      <div className="mx-auto max-w-7xl">
-        {/* TOP LINE */}
-
-        <div className="footer-line mb-12 h-px w-full bg-white/10 md:mb-16" />
-
-        {/* MAIN FOOTER */}
-
-        <div className="footer-content flex flex-col justify-between gap-12 md:flex-row md:items-end">
-          {/* BRAND */}
-
-          <div>
-            <p className="text-4xl font-light tracking-[0.18em] md:text-5xl">
-              KAAL
-            </p>
-
-            <p className="mt-4 text-[9px] uppercase tracking-[0.45em] text-white/35 md:text-[10px]">
-              Spirits of the Monsoon
-            </p>
-
-            <p className="mt-8 max-w-xs text-sm leading-6 text-white/30">
-              Wild botanicals. Monsoon air. A spirit shaped by the landscape
-              that surrounds it.
-            </p>
-          </div>
-
-          {/* BRAND MARK */}
-
-          <div className="flex h-24 w-24 items-center justify-center rounded-full border border-white/10 md:h-28 md:w-28">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full border border-white/[0.06] md:h-20 md:w-20">
-              <span className="text-[8px] uppercase tracking-[0.3em] text-white/30">
-                KAAL
-              </span>
-            </div>
-          </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -right-40 -top-56 h-[35rem] w-[35rem] rounded-full bg-[#713a18]/[0.11] blur-[140px]"
+      />
+      <div className="relative mx-auto max-w-7xl">
+        <div className="footer-reveal flex items-center justify-between gap-4 border-y border-white/10 py-4">
+          <p className="text-[8px] uppercase tracking-[0.42em] text-white/40 sm:text-[9px]">
+            The wild, distilled
+          </p>
+          <p className="text-[8px] uppercase tracking-[0.32em] text-white/30 sm:text-[9px]">
+            07 / 07 · Maharashtra, India
+          </p>
         </div>
 
-        {/* BOTTOM */}
+        <div className="grid gap-10 py-12 sm:py-16 md:grid-cols-[1.15fr_0.85fr] md:items-end md:gap-16 md:py-20">
+          <div>
+            <p className="footer-reveal mb-5 text-[8px] uppercase tracking-[0.45em] text-[#d8b77c]/60 sm:text-[9px]">
+              Wild botanicals · Monsoon air
+            </p>
+            <h2 className="footer-reveal max-w-3xl text-[clamp(2.8rem,6vw,6rem)] font-light leading-[0.9] tracking-[-0.055em]">
+              Carry the
+              <span className="block text-white/35">monsoon with you.</span>
+            </h2>
+            <p className="footer-wordmark mt-8 select-none font-serif text-[clamp(5.5rem,17vw,14rem)] leading-[0.68] tracking-[-0.065em] text-[#eee7da]">
+              KAAL
+            </p>
+            <p className="footer-reveal mt-7 max-w-sm text-xs leading-6 text-white/45 sm:mt-9 sm:text-sm sm:leading-7">
+              A spirit shaped by the landscape that surrounds it. Best enjoyed
+              slowly, wherever the evening takes you.
+            </p>
+          </div>
 
-        <div className="footer-bottom mt-16 flex flex-col justify-between gap-5 border-t border-white/10 pt-6 md:mt-24 md:flex-row md:items-center">
-          <p className="text-[9px] uppercase tracking-[0.3em] text-white/25">
-            The wild, distilled.
-          </p>
+          <nav aria-label="Footer navigation" className="footer-reveal">
+            <div className="mb-5 flex items-center justify-between">
+              <p className="text-[8px] uppercase tracking-[0.4em] text-white/35 sm:text-[9px]">
+                Explore KAAL
+              </p>
+              <span className="h-px w-10 bg-[#d8b77c]/45" />
+            </div>
+            <ul className="grid grid-cols-2 gap-x-8 gap-y-5 border-t border-white/10 pt-5 sm:max-w-md">
+              {footerLinks.map((link, index) => (
+                <li key={link.href}>
+                  <a
+                    href={link.href}
+                    className="group inline-flex items-center gap-2 text-xs text-white/60 transition-colors hover:text-[#e5c58f] sm:text-sm"
+                  >
+                    <span className="text-[8px] tracking-[0.2em] text-[#d8b77c]/45">
+                      0{index + 1}
+                    </span>
+                    <span className="h-px w-0 bg-[#d8b77c] transition-all duration-300 group-hover:w-4" />
+                    {link.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
 
-          <div className="flex items-center gap-6">
-            <span className="text-[9px] uppercase tracking-[0.3em] text-white/20">
-              Maharashtra
-            </span>
-
-            <span className="h-3 w-px bg-white/10" />
-
-            <span className="text-[9px] uppercase tracking-[0.3em] text-white/25">
-              © 2026 KAAL
-            </span>
+        <div className="footer-reveal flex flex-col justify-between gap-4 border-t border-white/10 pt-5 text-[8px] uppercase tracking-[0.28em] text-white/30 sm:flex-row sm:items-center sm:text-[9px]">
+          <p>Spirits of the Monsoon</p>
+          <div className="flex items-center gap-4 sm:gap-6">
+            <span>Made in Maharashtra</span>
+            <span className="h-3 w-px bg-white/15" />
+            <span>© 2026 KAAL</span>
           </div>
         </div>
       </div>

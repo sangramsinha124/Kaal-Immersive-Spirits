@@ -16,6 +16,7 @@ const cocktails = [
     ingredients: ["KAAL", "Bitter Orange", "Sweet Vermouth", "Wild Botanicals"],
     garnish: "Orange Peel",
     accent: "amber",
+    vessel: "rocks",
   },
   {
     number: "02",
@@ -26,6 +27,7 @@ const cocktails = [
     ingredients: ["KAAL", "Tonic", "Fresh Citrus", "Mountain Herbs"],
     garnish: "Citrus Twist",
     accent: "silver",
+    vessel: "highball",
   },
   {
     number: "03",
@@ -36,65 +38,160 @@ const cocktails = [
     ingredients: ["KAAL", "Jaggery", "Aromatic Bitters", "Smoke"],
     garnish: "Orange & Clove",
     accent: "gold",
+    vessel: "rocks",
   },
-];
+] as const;
 
-function CocktailGlass({ accent }: { accent: "amber" | "silver" | "gold" }) {
+type Cocktail = (typeof cocktails)[number];
+
+function CocktailArtwork({
+  cocktail,
+}: {
+  cocktail: Cocktail;
+}) {
+  const clipId = `glass-clip-${cocktail.number}`;
+  const drinkId = `drink-gradient-${cocktail.number}`;
+  const isHighball = cocktail.vessel === "highball";
+  const isSilver = cocktail.accent === "silver";
+
+  const glassPath = isHighball
+    ? "M91 78 Q150 84 209 78 L195 300 Q194 315 180 315 H120 Q106 315 105 300 Z"
+    : "M65 126 Q150 117 235 126 L218 280 Q216 301 195 301 H105 Q84 301 82 280 Z";
+
+  const liquidPath = isHighball
+    ? "M104 154 Q150 158 196 154 L187 296 Q186 304 177 304 H123 Q114 304 113 296 Z"
+    : "M78 172 Q150 166 222 172 L211 278 Q209 291 193 291 H107 Q91 291 89 278 Z";
+
   return (
-    <div className="relative flex h-[430px] w-[300px] items-center justify-center md:h-[520px] md:w-[360px]">
-      {/* Ambient halo */}
+    <div className="relative mx-auto flex aspect-[0.82] w-full max-w-[330px] items-center justify-center md:max-w-[390px]">
       <div
-        className={`absolute h-[260px] w-[260px] rounded-full blur-3xl ${
-          accent === "amber"
-            ? "bg-orange-400/10"
-            : accent === "gold"
-              ? "bg-amber-300/10"
-              : "bg-white/10"
+        className={`absolute inset-[7%] rounded-full blur-[70px] ${
+          isSilver ? "bg-emerald-200/[0.08]" : "bg-orange-400/[0.12]"
         }`}
+        aria-hidden="true"
       />
+      <div className="absolute inset-[5%] rounded-full border border-white/[0.07]" />
+      <svg
+        viewBox="0 0 300 390"
+        role="img"
+        aria-label={`${cocktail.name} cocktail in a ${isHighball ? "highball" : "rocks"} glass, garnished with ${cocktail.garnish}`}
+        className="relative z-10 h-full w-full overflow-visible drop-shadow-[0_24px_38px_rgba(0,0,0,0.4)]"
+      >
+        <defs>
+          <linearGradient id={drinkId} x1="0" y1="1" x2="0.8" y2="0">
+            <stop offset="0%" stopColor={isSilver ? "#73918b" : "#61270f"} />
+            <stop offset="55%" stopColor={isSilver ? "#b9cbb5" : "#b6531d"} />
+            <stop offset="100%" stopColor={isSilver ? "#e0e8c5" : "#e49a42"} />
+          </linearGradient>
+          <clipPath id={clipId}>
+            <path d={glassPath} />
+          </clipPath>
+        </defs>
 
-      {/* Ritual circle */}
-      <div className="absolute h-[300px] w-[300px] rounded-full border border-white/10 md:h-[360px] md:w-[360px]" />
-
-      <div className="relative flex h-[330px] w-[210px] flex-col items-center md:h-[390px] md:w-[250px]">
-        {/* Glass rim */}
-        <div className="absolute top-[58px] z-20 h-[8px] w-[190px] rounded-[50%] border border-white/30 bg-white/[0.03] shadow-[0_0_30px_rgba(255,255,255,0.06)] md:w-[220px]" />
-
-        {/* Glass bowl */}
-        <div className="absolute top-[60px] h-[205px] w-[190px] overflow-hidden rounded-b-[90px] rounded-t-[12px] border-x border-b border-white/20 bg-white/[0.025] backdrop-blur-[2px] md:h-[245px] md:w-[220px]">
-          {/* Drink */}
-          <div
-            className={`absolute bottom-0 left-0 right-0 h-[68%] ${
-              accent === "amber"
-                ? "bg-gradient-to-t from-[#6b260d]/80 via-[#a64d18]/55 to-[#d98235]/25"
-                : accent === "gold"
-                  ? "bg-gradient-to-t from-[#5b3512]/90 via-[#9b681e]/55 to-[#d2a34b]/20"
-                  : "bg-gradient-to-t from-[#bac5c2]/25 via-[#d9e4df]/10 to-transparent"
-            }`}
-          />
-
-          {/* Ice */}
-          <div className="absolute bottom-[55px] left-[42px] h-[48px] w-[42px] rotate-12 border border-white/20 bg-white/10 backdrop-blur-sm" />
-          <div className="absolute bottom-[80px] right-[35px] h-[42px] w-[38px] -rotate-12 border border-white/15 bg-white/[0.08]" />
-          <div className="absolute bottom-[32px] right-[72px] h-[38px] w-[35px] rotate-6 border border-white/15 bg-white/[0.07]" />
-
-          {/* Liquid reflection */}
-          <div className="absolute bottom-[18px] left-[15%] right-[15%] h-px bg-white/20 blur-[1px]" />
-        </div>
-
-        {/* Stem */}
-        <div className="absolute top-[260px] h-[115px] w-px bg-gradient-to-b from-white/25 to-white/10 md:top-[305px] md:h-[120px]" />
-
-        {/* Base */}
-        <div className="absolute bottom-[5px] h-px w-[130px] bg-white/20 md:w-[150px]" />
-
-        {/* Garnish */}
-        <div
-          className={`absolute right-[25px] top-[30px] z-30 h-[45px] w-[12px] rotate-[35deg] rounded-full ${
-            accent === "silver" ? "bg-lime-300/50" : "bg-orange-300/60"
-          } blur-[1px]`}
+        <ellipse
+          cx="150"
+          cy="348"
+          rx="94"
+          ry="8"
+          fill="#d6b276"
+          fillOpacity="0.12"
         />
-      </div>
+
+        <path
+          d={liquidPath}
+          fill={`url(#${drinkId})`}
+          clipPath={`url(#${clipId})`}
+          opacity="0.95"
+        />
+        <path
+          d={isHighball
+            ? "M105 169 Q150 174 195 169"
+            : "M79 185 Q150 179 221 185"}
+          fill="none"
+          stroke="#ffe3b0"
+          strokeOpacity="0.55"
+          strokeWidth="2"
+          clipPath={`url(#${clipId})`}
+        />
+
+        <g
+          clipPath={`url(#${clipId})`}
+          fill="#f6e9d6"
+          fillOpacity="0.24"
+          stroke="#fff6e8"
+          strokeOpacity="0.45"
+          strokeWidth="1.5"
+        >
+          <path d="M111 197 151 188 163 229 121 238Z" />
+          <path d="M160 215 193 208 202 244 168 251Z" />
+          {isHighball && <path d="M128 252 160 246 167 282 134 288Z" />}
+        </g>
+
+        <path
+          d={glassPath}
+          fill="rgba(255,255,255,0.035)"
+          stroke="rgba(243,231,210,0.58)"
+          strokeWidth="2"
+          strokeLinejoin="round"
+        />
+        <path
+          d={isHighball ? "M100 92 112 288" : "M78 142 92 273"}
+          fill="none"
+          stroke="#fff7e8"
+          strokeOpacity="0.46"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        <path
+          d={isHighball ? "M202 98 190 277" : "M222 143 210 270"}
+          fill="none"
+          stroke="#f4c98e"
+          strokeOpacity="0.24"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+
+        {isHighball ? (
+          <g transform="translate(205 84) rotate(28)">
+            <path
+              d="M0 0 C20 3 25 32 8 49 C-1 37 -8 17 0 0Z"
+              fill="#84966b"
+              stroke="#d4d6a4"
+              strokeWidth="1.5"
+            />
+            <path d="M1 5 8 43" stroke="#e5d99c" strokeWidth="1.5" />
+          </g>
+        ) : (
+          <g transform="translate(202 110)">
+            <circle r="24" fill="#c86b22" stroke="#f0bd70" strokeWidth="3" />
+            <circle r="17" fill="#e7a74e" stroke="#ffe2a1" strokeWidth="2" />
+            <path d="M0-16V16M-16 0H16M-11-11 11 11M11-11-11 11" stroke="#fff0bd" strokeOpacity=".78" strokeWidth="2" />
+            <circle r="4" fill="#b65a1e" />
+          </g>
+        )}
+
+        <path
+          d={isHighball ? "M101 77 Q150 83 199 77" : "M67 125 Q150 115 233 125"}
+          fill="none"
+          stroke="#fff8eb"
+          strokeOpacity="0.72"
+          strokeWidth="3"
+          strokeLinecap="round"
+        />
+        <path
+          d="M115 316 120 343 Q150 350 180 343 L185 316"
+          fill="rgba(255,255,255,0.025)"
+          stroke="rgba(243,231,210,0.4)"
+          strokeWidth="2"
+        />
+        <path
+          d="M88 349 Q150 340 212 349"
+          fill="none"
+          stroke="rgba(243,231,210,0.56)"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
     </div>
   );
 }
@@ -148,98 +245,109 @@ export default function Cocktails() {
       id="cocktails"
       className="relative h-screen overflow-hidden bg-[#080807] text-white"
     >
-      <div ref={track} className="absolute left-0 top-0 flex h-full w-max">
-        {/* INTRO */}
-        <div className="flex h-full w-screen shrink-0 items-center px-8 md:px-16 lg:px-24">
-          <div className="max-w-[720px]">
-            <p className="mb-8 text-[10px] uppercase tracking-[0.5em] text-white/35 md:text-xs">
+      <div
+        ref={track}
+        className="absolute left-0 top-0 flex h-full w-max"
+      >
+        <div className="relative flex h-full w-screen shrink-0 items-center px-7 sm:px-10 md:px-16 lg:px-24">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_82%_51%,rgba(130,65,25,0.12),transparent_42%)]" />
+          <div className="relative max-w-[720px]">
+            <p className="mb-7 text-[9px] uppercase tracking-[0.5em] text-[#d9b77b]/55 md:mb-8 md:text-xs">
               The Spirit Takes Form
             </p>
-
-            <h2 className="text-5xl leading-[0.9] tracking-[-0.04em] md:text-7xl lg:text-[9rem]">
+            <h2 className="text-[clamp(3.5rem,10vw,9rem)] leading-[0.88] tracking-[-0.055em]">
               Made to be
               <span className="block text-white/35">remembered.</span>
             </h2>
-
-            <p className="mt-10 max-w-md text-sm leading-7 text-white/45 md:text-base">
-              KAAL was made to move beyond the bottle. Three expressions, shaped
-              by rain, fire and the wild character of the Western Ghats.
+            <p className="mt-7 max-w-md text-xs leading-6 text-white/45 sm:mt-10 sm:text-sm sm:leading-7 md:text-base">
+              KAAL was made to move beyond the bottle. Three expressions,
+              shaped by rain, fire and the wild character of the Western Ghats.
             </p>
-
-            <div className="mt-12 flex items-center gap-4 text-[10px] uppercase tracking-[0.35em] text-white/30">
-              <span className="h-px w-12 bg-white/20" />
+            <div className="mt-9 flex items-center gap-4 text-[9px] uppercase tracking-[0.35em] text-white/35 sm:mt-12 sm:text-[10px]">
+              <span className="h-px w-12 bg-[#c59d61]/50" />
               Scroll to discover
             </div>
           </div>
+          <span className="absolute bottom-8 right-8 text-[9px] uppercase tracking-[0.35em] text-white/25 md:bottom-10 md:right-12">
+            01 — 03
+          </span>
         </div>
 
-        {/* COCKTAILS */}
         {cocktails.map((cocktail) => (
           <article
             key={cocktail.name}
-            className="cocktail-card flex h-full w-screen shrink-0 items-center px-8 md:px-16 lg:px-24"
+            className="cocktail-card relative flex h-full w-screen shrink-0 items-center overflow-hidden px-5 sm:px-8 md:px-16 lg:px-24"
           >
-            <div className="mx-auto grid w-full max-w-7xl items-center gap-8 md:grid-cols-[0.8fr_1.2fr] lg:grid-cols-[0.9fr_1.1fr]">
-              {/* Visual */}
-              <div className="flex justify-center md:justify-start">
-                <CocktailGlass
-                  accent={cocktail.accent as "amber" | "silver" | "gold"}
-                />
-              </div>
+            <div
+              className={`pointer-events-none absolute inset-0 ${
+                cocktail.accent === "silver"
+                  ? "bg-[radial-gradient(ellipse_at_23%_50%,rgba(103,135,117,0.17),transparent_39%)]"
+                  : cocktail.accent === "gold"
+                    ? "bg-[radial-gradient(ellipse_at_23%_50%,rgba(183,121,43,0.16),transparent_39%)]"
+                    : "bg-[radial-gradient(ellipse_at_23%_50%,rgba(172,77,29,0.17),transparent_39%)]"
+              }`}
+              aria-hidden="true"
+            />
+            <div className="relative mx-auto grid w-full max-w-7xl grid-cols-[0.84fr_1.16fr] items-center gap-2 sm:gap-8 md:grid-cols-[0.9fr_1.1fr] lg:gap-12">
+              <CocktailArtwork cocktail={cocktail} />
 
-              {/* Details */}
-              <div className="max-w-xl">
-                <div className="mb-8 flex items-center gap-5">
-                  <span className="text-xs tracking-[0.4em] text-white/25">
+              <div className="relative z-10 min-w-0">
+                <div className="mb-4 flex items-center gap-3 sm:mb-7 sm:gap-5">
+                  <span className="text-[10px] tracking-[0.35em] text-[#d8b779]/65 sm:text-xs">
                     {cocktail.number}
                   </span>
-
-                  <span className="h-px w-12 bg-white/15" />
-
-                  <span className="text-[10px] uppercase tracking-[0.45em] text-white/40">
+                  <span className="h-px w-7 bg-[#d8b779]/35 sm:w-12" />
+                  <span className="text-[8px] uppercase tracking-[0.3em] text-white/45 sm:text-[10px] sm:tracking-[0.45em]">
                     {cocktail.mood}
                   </span>
                 </div>
 
-                <h3 className="text-6xl font-light tracking-[-0.04em] md:text-8xl lg:text-[8rem]">
+                <h3 className="text-[clamp(2.35rem,7.3vw,8rem)] font-light leading-[0.92] tracking-[-0.06em]">
                   {cocktail.name}
                 </h3>
 
-                <p className="mt-8 max-w-lg text-sm leading-7 text-white/45 md:text-base">
+                <p className="mt-4 max-w-lg text-[11px] leading-[1.65] text-white/55 sm:mt-7 sm:text-sm sm:leading-7 md:text-base">
                   {cocktail.description}
                 </p>
 
-                <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3 border-t border-white/10 pt-6">
-                  {cocktail.ingredients.map((ingredient) => (
-                    <span
-                      key={ingredient}
-                      className="text-[10px] uppercase tracking-[0.25em] text-white/40"
-                    >
-                      {ingredient}
-                    </span>
-                  ))}
+                <div className="mt-5 border-t border-white/10 pt-4 sm:mt-8 sm:pt-6">
+                  <p className="mb-3 text-[8px] uppercase tracking-[0.3em] text-white/30 sm:text-[9px]">
+                    In the glass
+                  </p>
+                  <div className="flex flex-wrap gap-x-3 gap-y-2 sm:gap-x-5">
+                    {cocktail.ingredients.map((ingredient) => (
+                      <span
+                        key={ingredient}
+                        className="text-[8px] uppercase tracking-[0.16em] text-white/55 sm:text-[9px] sm:tracking-[0.22em]"
+                      >
+                        {ingredient}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-                <p className="mt-8 text-[10px] uppercase tracking-[0.35em] text-white/25">
+                <p className="mt-4 text-[8px] uppercase tracking-[0.25em] text-[#d8b779]/55 sm:mt-7 sm:text-[9px] sm:tracking-[0.35em]">
                   Garnished with {cocktail.garnish}
                 </p>
               </div>
             </div>
+
+            <span className="absolute bottom-7 right-7 text-[9px] uppercase tracking-[0.35em] text-white/25 sm:bottom-9 sm:right-10">
+              {cocktail.number} / 03
+            </span>
           </article>
         ))}
 
-        {/* END PANEL */}
-        <div className="flex h-full w-screen shrink-0 items-center justify-center px-8">
-          <div className="text-center">
-            <p className="mb-8 text-[10px] uppercase tracking-[0.5em] text-white/30">
+        <div className="relative flex h-full w-screen shrink-0 items-center justify-center overflow-hidden px-7">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_50%,rgba(154,87,39,0.16),transparent_48%)]" />
+          <div className="relative text-center">
+            <p className="mb-6 text-[9px] uppercase tracking-[0.5em] text-[#d9b77b]/55 sm:mb-8 sm:text-[10px]">
               KAAL
             </p>
-
-            <h3 className="text-5xl tracking-[-0.03em] md:text-7xl lg:text-8xl">
+            <h3 className="text-[clamp(3rem,8vw,7rem)] leading-[0.92] tracking-[-0.05em]">
               Pour the wild.
             </h3>
-
-            <p className="mx-auto mt-8 max-w-md text-sm leading-7 text-white/35">
+            <p className="mx-auto mt-5 max-w-md text-xs leading-6 text-white/45 sm:mt-8 sm:text-sm sm:leading-7">
               Best enjoyed slowly. Wherever the evening takes you.
             </p>
           </div>

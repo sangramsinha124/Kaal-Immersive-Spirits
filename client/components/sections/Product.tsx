@@ -148,9 +148,9 @@ export default function Product() {
       timeline.to(
         bottle.scale,
         {
-          x: 0.48,
-          y: 0.48,
-          z: 0.48,
+          x: 0.8,
+          y: 0.8,
+          z: 0.8,
           duration: 1.8,
           ease: "power3.out",
         },
@@ -188,9 +188,9 @@ export default function Product() {
       timeline.to(
         bottle.scale,
         {
-          x: 0.52,
-          y: 0.52,
-          z: 0.52,
+          x: 0.9,
+          y: 0.9,
+          z: 0.9,
           duration: 1.2,
           ease: "power2.out",
         },
@@ -203,7 +203,7 @@ export default function Product() {
       timeline.to(
         bottle.rotation,
         {
-          y: Math.PI * 0.32,
+          y: Math.PI * 0.12,
           duration: 2.2,
           ease: "power1.inOut",
         },
@@ -234,7 +234,7 @@ export default function Product() {
       timeline.to(
         bottle.rotation,
         {
-          y: Math.PI * 0.06,
+          y: Math.PI * 0.03,
           duration: 1.5,
           ease: "power2.inOut",
         },
@@ -263,9 +263,9 @@ export default function Product() {
       timeline.to(
         bottle.scale,
         {
-          x: 0.57,
-          y: 0.57,
-          z: 0.57,
+          x: 0.96,
+          y: 0.96,
+          z: 0.96,
           duration: 2,
           ease: "power2.inOut",
         },
@@ -408,7 +408,7 @@ export default function Product() {
       timeline.to(
         bottle.rotation,
         {
-          y: Math.PI * 0.5,
+          y: Math.PI * 0.18,
           duration: 1.5,
           ease: "power2.inOut",
         },
@@ -418,9 +418,9 @@ export default function Product() {
       timeline.to(
         bottle.scale,
         {
-          x: 0.42,
-          y: 0.42,
-          z: 0.42,
+          x: 0.82,
+          y: 0.82,
+          z: 0.82,
           duration: 1.5,
           ease: "power2.in",
         },
