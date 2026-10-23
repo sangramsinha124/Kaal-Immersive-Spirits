@@ -210,7 +210,7 @@ export default function Footer() {
                   >
                     {enquirySubmitted
                       ? "Thanks for your interest. This demo form does not send or store your details."
-                      : "Demo form only — your details are not sent or stored."}
+                      : null}
                   </p>
                 </div>
               </form>

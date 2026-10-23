@@ -389,7 +389,6 @@ export default function Distillery() {
           if (videoIndex === index) {
             failedVideos.delete(video);
             video.currentTime = index === 2 ? 1 : 0;
-            video.playbackRate = index === 2 ? 0.65 : 1;
             playVideo(video);
           } else {
             video.pause();
@@ -479,7 +478,7 @@ export default function Distillery() {
           .to(vaporCopy, { autoAlpha: 0, y: -20, duration: 0.25 }, 1.85)
           .to(vaporVideoRef.current, { autoAlpha: 0, duration: 0.25 }, 1.85)
           .to(waterCopy, { autoAlpha: 1, y: 0, duration: 0.35 }, 2.1)
-          .to(waterVideoRef.current, { autoAlpha: 0.4, duration: 0.35 }, 2.1)
+          .to(waterVideoRef.current, { autoAlpha: 0.32, duration: 0.35 }, 2.1)
           .to(progress, { scaleX: 1, duration: 2.8, ease: "none" }, 0);
 
         return () => {
@@ -552,7 +551,7 @@ export default function Distillery() {
         >
           <video
             ref={fireVideoRef}
-            className="absolute inset-0 h-full w-full object-contain object-bottom opacity-0"
+            className="absolute inset-0 h-full w-full object-cover object-center opacity-0"
             src="/videos/distillery/fire.mp4"
             muted
             loop
@@ -574,7 +573,7 @@ export default function Distillery() {
             ref={waterVideoRef}
             className="absolute inset-0 h-full w-full object-cover opacity-0"
             src="/videos/distillery/water.mp4"
-            style={{ transform: "scaleX(-1)" }}
+            style={{ filter: "saturate(0.55) sepia(0.25)" }}
             muted
             loop
             playsInline
