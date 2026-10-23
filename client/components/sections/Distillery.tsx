@@ -86,8 +86,7 @@ export default function Distillery() {
         const value = Math.sin(ix * 127.1 + iy * 311.7) * 43758.5453;
         return value - Math.floor(value);
       };
-      const top =
-        hash(x0, y0) * (1 - fadeX) + hash(x0 + 1, y0) * fadeX;
+      const top = hash(x0, y0) * (1 - fadeX) + hash(x0 + 1, y0) * fadeX;
       const bottom =
         hash(x0, y0 + 1) * (1 - fadeX) + hash(x0 + 1, y0 + 1) * fadeX;
       return top * (1 - fadeY) + bottom * fadeY;
@@ -128,9 +127,7 @@ export default function Distillery() {
       const progress = reducedMotion
         ? 0.5
         : Number(section.dataset.processProgress || 0);
-      const fireWeight = reducedMotion
-        ? 0.45
-        : 1 - Math.min(1, progress * 3.2);
+      const fireWeight = reducedMotion ? 0.45 : 1 - Math.min(1, progress * 3.2);
       const vaporWeight = reducedMotion
         ? 0.35
         : Math.max(0, 1 - Math.abs(progress - 0.5) * 3.3);
@@ -204,8 +201,7 @@ export default function Distillery() {
             const turbulence =
               (smoothNoise(nx * 7 + t * 0.11, ny * 3.2 - t * 0.52) - 0.5) *
                 0.34 +
-              (smoothNoise(nx * 15 - t * 0.08, ny * 5.4 - t * 0.78) -
-                0.5) *
+              (smoothNoise(nx * 15 - t * 0.08, ny * 5.4 - t * 0.78) - 0.5) *
                 0.2;
             const center = 0.47 + Math.sin(t * 0.7) * 0.035;
             const shape = clamp01(
@@ -216,9 +212,7 @@ export default function Distillery() {
             );
             const heat = shape * fireWeight;
             const core =
-              falloff(nx, center, 0.11) *
-              falloff(ny, 0.91, 0.2) *
-              heat;
+              falloff(nx, center, 0.11) * falloff(ny, 0.91, 0.2) * heat;
             const flameAlpha = heat * smoothStep(0.08, 0.55, shape) * 0.78;
             red += 255 * flameAlpha;
             green += (54 + 170 * core + 82 * heat) * flameAlpha;
@@ -362,7 +356,11 @@ export default function Distillery() {
       let activeVideoIndex = -1;
       const playVideo = (video: HTMLVideoElement) => {
         if (document.visibilityState !== "visible") return;
-        if (!video.paused || pendingVideos.has(video) || failedVideos.has(video))
+        if (
+          !video.paused ||
+          pendingVideos.has(video) ||
+          failedVideos.has(video)
+        )
           return;
         pendingVideos.add(video);
         video
@@ -434,7 +432,7 @@ export default function Distillery() {
           [fireVideoRef.current, vaporVideoRef.current, waterVideoRef.current],
           { autoAlpha: 0 },
         );
-        gsap.set(fireVideoRef.current, { autoAlpha: 0.62 });
+        gsap.set(fireVideoRef.current, { autoAlpha: 0.34 });
         gsap.set([vaporCopy, waterCopy], { autoAlpha: 0 });
         gsap.set(vaporCopy, { y: 24 });
         gsap.set(waterCopy, { y: 24 });
@@ -460,8 +458,7 @@ export default function Distillery() {
             onUpdate: (self) => {
               const progress = self.progress;
               section.dataset.processProgress = String(progress);
-              const activeIndex =
-                progress < 0.31 ? 0 : progress < 0.68 ? 1 : 2;
+              const activeIndex = progress < 0.31 ? 0 : progress < 0.68 ? 1 : 2;
               activateVideo(activeIndex);
               const activePanel = copyPanels[activeIndex];
               copyPanels.forEach((panel) => {
@@ -482,7 +479,7 @@ export default function Distillery() {
           .to(vaporCopy, { autoAlpha: 0, y: -20, duration: 0.25 }, 1.85)
           .to(vaporVideoRef.current, { autoAlpha: 0, duration: 0.25 }, 1.85)
           .to(waterCopy, { autoAlpha: 1, y: 0, duration: 0.35 }, 2.1)
-          .to(waterVideoRef.current, { autoAlpha: 0.72, duration: 0.35 }, 2.1)
+          .to(waterVideoRef.current, { autoAlpha: 0.4, duration: 0.35 }, 2.1)
           .to(progress, { scaleX: 1, duration: 2.8, ease: "none" }, 0);
 
         return () => {
@@ -512,6 +509,7 @@ export default function Distillery() {
 
   return (
     <section
+      id="distillery"
       ref={container}
       className="relative h-[340svh] overflow-clip bg-[#070706] text-white motion-reduce:h-auto"
       aria-label="The distillation process"

@@ -38,10 +38,10 @@ const KaalBottle = forwardRef<THREE.Group>(function KaalBottle(_, ref) {
     const geometry = new THREE.ExtrudeGeometry(shape, {
       depth: 1.1,
       bevelEnabled: true,
-      bevelSegments: 6,
-      bevelSize: 0.1,
-      bevelThickness: 0.12,
-      curveSegments: 12,
+      bevelSegments: 8,
+      bevelSize: 0.075,
+      bevelThickness: 0.1,
+      curveSegments: 20,
       steps: 1,
     });
     geometry.translate(0, 0, -0.55);
@@ -77,9 +77,12 @@ const KaalBottle = forwardRef<THREE.Group>(function KaalBottle(_, ref) {
 
   const bottleMaterial = useMemo(
     () =>
-      new THREE.MeshBasicMaterial({
-        color: "#642908",
-        toneMapped: false,
+      new THREE.MeshPhysicalMaterial({
+        color: "#8c3d16",
+        roughness: 0.22,
+        metalness: 0.04,
+        clearcoat: 0.82,
+        clearcoatRoughness: 0.16,
       }),
     [],
   );
@@ -87,10 +90,11 @@ const KaalBottle = forwardRef<THREE.Group>(function KaalBottle(_, ref) {
   const bottleEdgeMaterial = useMemo(
     () =>
       new THREE.MeshStandardMaterial({
-        color: "#6b2b09",
-        roughness: 0.24,
-        metalness: 0.12,
-        emissive: "#1d0801",
+        color: "#59240e",
+        roughness: 0.2,
+        metalness: 0.08,
+        emissive: "#160600",
+        emissiveIntensity: 0.35,
       }),
     [],
   );
@@ -100,7 +104,19 @@ const KaalBottle = forwardRef<THREE.Group>(function KaalBottle(_, ref) {
       new THREE.MeshBasicMaterial({
         color: "#e4a15b",
         transparent: true,
-        opacity: 0.32,
+        opacity: 0.42,
+        toneMapped: false,
+        depthWrite: false,
+      }),
+    [],
+  );
+
+  const softGlintMaterial = useMemo(
+    () =>
+      new THREE.MeshBasicMaterial({
+        color: "#ffd391",
+        transparent: true,
+        opacity: 0.12,
         toneMapped: false,
         depthWrite: false,
       }),
@@ -149,13 +165,25 @@ const KaalBottle = forwardRef<THREE.Group>(function KaalBottle(_, ref) {
           position={[x, -0.48, 0.7]}
           material={glassGlintMaterial}
         >
-          <planeGeometry args={[0.025, 2.15]} />
+          <planeGeometry args={[0.035, 2.15]} />
         </mesh>
       ))}
+
+      <mesh position={[-0.84, 0.28, 0.705]} material={softGlintMaterial}>
+        <planeGeometry args={[0.07, 1.42]} />
+      </mesh>
+
+      <mesh position={[0, -2.18, 0.705]} material={glassGlintMaterial}>
+        <planeGeometry args={[1.72, 0.055]} />
+      </mesh>
 
       <mesh position={[0, 0.04, 0.72]} renderOrder={2}>
         <planeGeometry args={[1.48, 1.9]} />
         <primitive object={labelMaterial} attach="material" />
+      </mesh>
+
+      <mesh position={[0, 2.78, 0]} material={bottleEdgeMaterial}>
+        <cylinderGeometry args={[0.39, 0.39, 0.1, 24]} />
       </mesh>
 
       <mesh geometry={capGeometry} material={capMaterial} />

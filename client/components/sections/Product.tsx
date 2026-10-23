@@ -459,6 +459,7 @@ export default function Product() {
 
   return (
     <section
+      id="product"
       ref={container}
       className="relative h-[500vh] bg-[#050505] text-white"
     >
@@ -583,13 +584,13 @@ export default function Product() {
 
           <div className="product-actions pointer-events-auto mt-8 flex flex-wrap items-center gap-3 opacity-0">
             <a
-              href="#reserve"
+              href="#contact"
               className="inline-flex items-center justify-center rounded-full border border-[#d9a35b]/70 bg-[#d9a35b] px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.25em] text-[#1b120f] transition duration-300 hover:-translate-y-0.5 hover:bg-[#e7b56d]"
             >
               Reserve Bottles
             </a>
             <a
-              href="#notes"
+              href="#ingredients"
               className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/4 px-5 py-2.5 text-[11px] font-medium uppercase tracking-[0.25em] text-white/80 backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-[#d9a35b]/60 hover:text-[#f2d4a6]"
             >
               Explore Notes

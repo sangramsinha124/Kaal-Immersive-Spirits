@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const navigationItems = [
   {
@@ -21,8 +21,28 @@ const navigationItems = [
   },
 ];
 
+const menuItems = [
+  { label: "The story", target: "story", number: "01" },
+  { label: "The manifesto", target: "manifesto", number: "02" },
+  { label: "Botanicals", target: "ingredients", number: "03" },
+  { label: "The spirit", target: "product", number: "04" },
+  { label: "The distillery", target: "distillery", number: "05" },
+  { label: "Cocktail rituals", target: "cocktails", number: "06" },
+];
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMenuOpen(false);
+    };
+
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [menuOpen]);
 
   const scrollToSection = (target: string) => {
     const element = document.getElementById(target);
@@ -71,6 +91,7 @@ export default function Navbar() {
           className="relative z-50 flex h-10 w-10 items-center justify-center rounded-full border border-white/20"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
+          aria-controls="site-menu"
         >
           <span
             className={`absolute h-px w-4 bg-white transition-transform duration-300 ${
@@ -86,22 +107,65 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile menu */}
+      {/* Section index */}
       <div
-        className={`absolute left-0 top-0 -z-10 flex min-h-screen w-full flex-col items-center justify-center bg-black transition-all duration-500 md:hidden ${
+        id="site-menu"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Explore KAAL"
+        aria-hidden={!menuOpen}
+        onClick={() => setMenuOpen(false)}
+        className={`fixed inset-0 z-40 flex min-h-screen w-full flex-col items-center justify-center overflow-y-auto bg-[#070706]/[0.98] transition-all duration-500 ${
           menuOpen ? "visible opacity-100" : "invisible opacity-0"
         }`}
       >
-        <div className="flex flex-col items-center gap-8">
-          {navigationItems.map((item) => (
+        <div
+          onClick={(event) => event.stopPropagation()}
+          className="flex min-h-screen w-full max-w-7xl flex-col justify-center px-8 py-28 sm:px-14"
+        >
+          <div className="mb-10 flex items-center justify-between border-b border-white/15 pb-5">
+            <p className="text-[9px] uppercase tracking-[0.45em] text-[#d8b77c]/70">
+              Explore the spirit
+            </p>
+            <span className="text-[9px] uppercase tracking-[0.3em] text-white/30">
+              Maharashtra, India
+            </span>
+          </div>
+
+          <nav aria-label="Main menu" className="grid gap-x-14 md:grid-cols-2">
+            {menuItems.map((item) => (
+              <button
+                key={item.target}
+                onClick={() => scrollToSection(item.target)}
+                className="group flex items-center gap-5 border-b border-white/10 py-4 text-left sm:py-5"
+              >
+                <span className="text-[9px] tracking-[0.25em] text-[#d8b77c]/55">
+                  {item.number}
+                </span>
+                <span className="flex-1 text-2xl font-light tracking-[-0.04em] text-white/75 transition-colors group-hover:text-white sm:text-3xl">
+                  {item.label}
+                </span>
+                <span
+                  aria-hidden="true"
+                  className="text-sm text-white/30 transition-all group-hover:translate-x-1 group-hover:text-[#d8b77c]"
+                >
+                  ↗
+                </span>
+              </button>
+            ))}
+          </nav>
+
+          <div className="mt-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-center">
+            <p className="max-w-xs text-xs leading-6 text-white/40">
+              A spirit shaped by wild botanicals and the rhythm of the monsoon.
+            </p>
             <button
-              key={item.target}
-              onClick={() => scrollToSection(item.target)}
-              className="text-3xl uppercase tracking-[0.2em] text-white"
+              onClick={() => scrollToSection("contact")}
+              className="self-start border-b border-[#d8b77c]/50 pb-2 text-[9px] uppercase tracking-[0.3em] text-[#e0c394] transition-colors hover:text-white sm:self-auto"
             >
-              {item.label}
+              Make an enquiry <span aria-hidden="true">↗</span>
             </button>
-          ))}
+          </div>
         </div>
       </div>
     </header>

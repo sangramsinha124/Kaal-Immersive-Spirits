@@ -1,6 +1,6 @@
 "use client";
 
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState, type FormEvent } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -9,12 +9,19 @@ gsap.registerPlugin(ScrollTrigger);
 const footerLinks = [
   { label: "The story", href: "#story" },
   { label: "Botanicals", href: "#ingredients" },
-  { label: "The spirit", href: "#manifesto" },
+  { label: "The spirit", href: "#product" },
   { label: "Cocktails", href: "#cocktails" },
 ];
 
 export default function Footer() {
   const footer = useRef<HTMLElement>(null);
+  const [enquirySubmitted, setEnquirySubmitted] = useState(false);
+
+  const handleEnquirySubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    event.currentTarget.reset();
+    setEnquirySubmitted(true);
+  };
 
   useLayoutEffect(() => {
     const section = footer.current;
@@ -91,30 +98,124 @@ export default function Footer() {
             </p>
           </div>
 
-          <nav aria-label="Footer navigation" className="footer-reveal">
-            <div className="mb-5 flex items-center justify-between">
-              <p className="text-[8px] uppercase tracking-[0.4em] text-white/35 sm:text-[9px]">
-                Explore KAAL
+          <div className="footer-reveal">
+            <nav aria-label="Footer navigation">
+              <div className="mb-5 flex items-center justify-between">
+                <p className="text-[8px] uppercase tracking-[0.4em] text-white/35 sm:text-[9px]">
+                  Explore KAAL
+                </p>
+                <span className="h-px w-10 bg-[#d8b77c]/45" />
+              </div>
+              <ul className="grid grid-cols-2 gap-x-8 gap-y-5 border-t border-white/10 pt-5 sm:max-w-md">
+                {footerLinks.map((link, index) => (
+                  <li key={link.href}>
+                    <a
+                      href={link.href}
+                      className="group inline-flex items-center gap-2 text-xs text-white/60 transition-colors hover:text-[#e5c58f] sm:text-sm"
+                    >
+                      <span className="text-[8px] tracking-[0.2em] text-[#d8b77c]/45">
+                        0{index + 1}
+                      </span>
+                      <span className="h-px w-0 bg-[#d8b77c] transition-all duration-300 group-hover:w-4" />
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+
+            <section
+              id="contact"
+              aria-labelledby="enquiry-heading"
+              className="mt-12 border-t border-white/10 pt-7"
+            >
+              <p className="text-[8px] uppercase tracking-[0.4em] text-[#d8b77c]/65 sm:text-[9px]">
+                Start a conversation
               </p>
-              <span className="h-px w-10 bg-[#d8b77c]/45" />
-            </div>
-            <ul className="grid grid-cols-2 gap-x-8 gap-y-5 border-t border-white/10 pt-5 sm:max-w-md">
-              {footerLinks.map((link, index) => (
-                <li key={link.href}>
-                  <a
-                    href={link.href}
-                    className="group inline-flex items-center gap-2 text-xs text-white/60 transition-colors hover:text-[#e5c58f] sm:text-sm"
+              <h2
+                id="enquiry-heading"
+                className="mt-3 text-2xl font-light tracking-[-0.04em] sm:text-3xl"
+              >
+                Make an enquiry.
+              </h2>
+              <p className="mt-2 text-xs leading-5 text-white/40">
+                Leave a note about partnerships, events, or the spirit.
+              </p>
+
+              <form onSubmit={handleEnquirySubmit} className="mt-6 grid gap-4">
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <label className="grid gap-2 text-[9px] uppercase tracking-[0.2em] text-white/45">
+                    Your name
+                    <input
+                      name="name"
+                      autoComplete="name"
+                      required
+                      className="min-h-11 w-full border border-white/15 bg-white/[0.03] px-3 text-sm normal-case tracking-normal text-white outline-none transition-colors placeholder:text-white/25 focus:border-[#d8b77c]/70"
+                      placeholder="Name"
+                    />
+                  </label>
+                  <label className="grid gap-2 text-[9px] uppercase tracking-[0.2em] text-white/45">
+                    Email address
+                    <input
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      className="min-h-11 w-full border border-white/15 bg-white/[0.03] px-3 text-sm normal-case tracking-normal text-white outline-none transition-colors placeholder:text-white/25 focus:border-[#d8b77c]/70"
+                      placeholder="you@example.com"
+                    />
+                  </label>
+                </div>
+
+                <label className="grid gap-2 text-[9px] uppercase tracking-[0.2em] text-white/45">
+                  What is this about?
+                  <select
+                    name="enquiry"
+                    defaultValue=""
+                    required
+                    className="min-h-11 w-full border border-white/15 bg-[#0b0b0a] px-3 text-sm normal-case tracking-normal text-white outline-none transition-colors focus:border-[#d8b77c]/70"
                   >
-                    <span className="text-[8px] tracking-[0.2em] text-[#d8b77c]/45">
-                      0{index + 1}
-                    </span>
-                    <span className="h-px w-0 bg-[#d8b77c] transition-all duration-300 group-hover:w-4" />
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
+                    <option value="" disabled>
+                      Choose an enquiry type
+                    </option>
+                    <option value="general">General enquiry</option>
+                    <option value="partnership">Partnership</option>
+                    <option value="events">Events</option>
+                    <option value="trade">Trade and distribution</option>
+                  </select>
+                </label>
+
+                <label className="grid gap-2 text-[9px] uppercase tracking-[0.2em] text-white/45">
+                  Your message
+                  <textarea
+                    name="message"
+                    rows={3}
+                    required
+                    className="w-full resize-y border border-white/15 bg-white/[0.03] px-3 py-3 text-sm normal-case tracking-normal text-white outline-none transition-colors placeholder:text-white/25 focus:border-[#d8b77c]/70"
+                    placeholder="Tell us a little about your enquiry..."
+                  />
+                </label>
+
+                <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <button
+                    type="submit"
+                    className="inline-flex min-h-11 items-center gap-3 border border-[#d8b77c]/60 px-5 text-[9px] uppercase tracking-[0.25em] text-[#ead2a6] transition-colors hover:bg-[#d8b77c] hover:text-[#17120d]"
+                  >
+                    Send enquiry <span aria-hidden="true">↗</span>
+                  </button>
+                  <p
+                    role="status"
+                    aria-live="polite"
+                    className="max-w-xs text-[10px] leading-4 text-white/40"
+                  >
+                    {enquirySubmitted
+                      ? "Thanks for your interest. This demo form does not send or store your details."
+                      : "Demo form only — your details are not sent or stored."}
+                  </p>
+                </div>
+              </form>
+            </section>
+          </div>
         </div>
 
         <div className="footer-reveal flex flex-col justify-between gap-4 border-t border-white/10 pt-5 text-[8px] uppercase tracking-[0.28em] text-white/30 sm:flex-row sm:items-center sm:text-[9px]">

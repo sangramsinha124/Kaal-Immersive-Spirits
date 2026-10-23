@@ -98,9 +98,9 @@ export default function Manifesto() {
             </h2>
 
             <p className="manifesto-reveal mt-7 max-w-md text-xs leading-6 text-white/55 sm:mt-9 sm:text-sm sm:leading-7 md:text-base">
-              KAAL is born from the raw poetry of the monsoon — where rain
-              meets earth, where nature and tradition unite, and where every
-              drop carries a story.
+              KAAL is born from the raw poetry of the monsoon — where rain meets
+              earth, where nature and tradition unite, and where every drop
+              carries a story.
             </p>
 
             <div className="manifesto-reveal mt-8 flex items-center gap-4 sm:mt-10">
@@ -135,16 +135,12 @@ export default function Manifesto() {
           />
 
           <div className="absolute inset-5 border border-white/15 sm:inset-7 md:inset-9">
-            <div className="absolute left-4 top-4 flex items-center gap-3 sm:left-6 sm:top-6">
-              <span className="h-px w-6 bg-[#d8b77c]/80" />
-              <span className="text-[8px] uppercase tracking-[0.35em] text-white/65">
-                The Western Ghats
-              </span>
-            </div>
             <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-4 sm:bottom-6 sm:left-6 sm:right-6">
               <p className="max-w-[15rem] font-serif text-2xl leading-[0.95] tracking-[-0.035em] text-white/90 sm:text-4xl">
                 The land gives
-                <span className="block text-white/55">the spirit its soul.</span>
+                <span className="block text-white/55">
+                  the spirit its soul.
+                </span>
               </p>
               <span className="shrink-0 text-[8px] uppercase tracking-[0.3em] text-white/55">
                 Monsoon / 01

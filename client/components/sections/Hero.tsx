@@ -1,11 +1,22 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 
+type RainDrop = {
+  x: number;
+  y: number;
+  length: number;
+  speed: number;
+  drift: number;
+  opacity: number;
+  width: number;
+};
+
 export default function Hero() {
   const container = useRef<HTMLElement>(null);
+  const rainCanvas = useRef<HTMLCanvasElement>(null);
 
   useGSAP(
     () => {
@@ -45,6 +56,120 @@ export default function Hero() {
     },
   );
 
+  useEffect(() => {
+    const canvas = rainCanvas.current;
+    const section = container.current;
+    const context = canvas?.getContext("2d");
+
+    if (!canvas || !section) return;
+    if (!context) {
+      console.error("Hero rain canvas could not be initialized.");
+      return;
+    }
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let reducedMotion = motionQuery.matches;
+    let visible = false;
+    let frame = 0;
+    let lastFrame = 0;
+    let width = 0;
+    let height = 0;
+    let drops: RainDrop[] = [];
+
+    const random = (min: number, max: number) =>
+      min + Math.random() * (max - min);
+
+    const resize = () => {
+      const bounds = section.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+      width = bounds.width;
+      height = bounds.height;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+      drops = Array.from(
+        { length: Math.max(48, Math.round((width * height) / 11000)) },
+        () => ({
+          x: random(0, width),
+          y: random(-height, height),
+          length: random(9, 19),
+          speed: random(390, 650),
+          drift: random(-115, -72),
+          opacity: random(0.12, 0.28),
+          width: random(0.45, 0.8),
+        }),
+      );
+    };
+
+    const render = (time: number) => {
+      const delta = Math.min((time - lastFrame) / 1000, 0.05);
+      lastFrame = time;
+      context.clearRect(0, 0, width, height);
+      context.lineCap = "round";
+
+      drops.forEach((drop) => {
+        drop.x += drop.drift * delta;
+        drop.y += drop.speed * delta;
+
+        if (drop.y - drop.length > height || drop.x < -30) {
+          drop.x = random(0, width + 30);
+          drop.y = random(-80, -drop.length);
+        }
+
+        context.beginPath();
+        context.moveTo(drop.x, drop.y);
+        context.lineTo(
+          drop.x + (drop.drift / drop.speed) * drop.length,
+          drop.y + drop.length,
+        );
+        context.strokeStyle = `rgba(224, 235, 239, ${drop.opacity})`;
+        context.lineWidth = drop.width;
+        context.stroke();
+      });
+
+      frame = requestAnimationFrame(render);
+    };
+
+    const start = () => {
+      if (!visible || reducedMotion || frame) return;
+      lastFrame = performance.now();
+      frame = requestAnimationFrame(render);
+    };
+
+    const stop = () => {
+      if (frame) cancelAnimationFrame(frame);
+      frame = 0;
+    };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) start();
+      else stop();
+    });
+    const resizeObserver = new ResizeObserver(resize);
+    const handleMotionChange = () => {
+      reducedMotion = motionQuery.matches;
+      if (reducedMotion) {
+        stop();
+        context.clearRect(0, 0, width, height);
+      } else {
+        start();
+      }
+    };
+
+    resize();
+    observer.observe(section);
+    resizeObserver.observe(section);
+    motionQuery.addEventListener("change", handleMotionChange);
+
+    return () => {
+      stop();
+      observer.disconnect();
+      resizeObserver.disconnect();
+      motionQuery.removeEventListener("change", handleMotionChange);
+    };
+  }, []);
+
   return (
     <section
       ref={container}
@@ -65,6 +190,11 @@ export default function Hero() {
       />
       <div
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_10%,rgba(0,0,0,0.24)_100%)]"
+        aria-hidden="true"
+      />
+      <canvas
+        ref={rainCanvas}
+        className="pointer-events-none absolute inset-0 z-[1] h-full w-full"
         aria-hidden="true"
       />
 
