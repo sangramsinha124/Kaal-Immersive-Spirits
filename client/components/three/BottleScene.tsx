@@ -95,7 +95,7 @@ export default function BottleScene({
       gl={{
         antialias: true,
         powerPreference: "high-performance",
-        alpha: false,
+        alpha: true,
         depth: true,
         stencil: false,
         preserveDrawingBuffer: false,
@@ -128,13 +128,13 @@ export default function BottleScene({
           GENERAL AMBIENT
       ====================================================== */}
 
-      <ambientLight intensity={0.3} />
+      <ambientLight intensity={0.16} />
 
       {/* ======================================================
           LARGE KEY LIGHT
       ====================================================== */}
 
-      <directionalLight position={[4, 7, 6]} intensity={2} color="#fff0d2" />
+      <directionalLight position={[4, 7, 6]} intensity={1.4} color="#fff0d2" />
 
       {/* ======================================================
           WARM RIM
@@ -142,10 +142,10 @@ export default function BottleScene({
 
       <pointLight
         position={[4.5, 2.5, 3]}
-        intensity={5}
+        intensity={5.5}
         distance={14}
         decay={2}
-        color="#ffad4d"
+        color="#ff9a32"
       />
 
       {/* ======================================================
@@ -154,10 +154,10 @@ export default function BottleScene({
 
       <pointLight
         position={[-4.5, 1.5, -2]}
-        intensity={2.5}
+        intensity={3.2}
         distance={12}
         decay={2}
-        color="#d47b31"
+        color="#ff6a1a"
       />
 
       {/* ======================================================
@@ -166,7 +166,7 @@ export default function BottleScene({
 
       <pointLight
         position={[0, 1, 6]}
-        intensity={3}
+        intensity={1.25}
         distance={14}
         decay={2}
         color="#fff4dc"
@@ -178,7 +178,7 @@ export default function BottleScene({
 
       <pointLight
         position={[0, 6, 1]}
-        intensity={2.4}
+        intensity={2.8}
         distance={12}
         decay={2}
         color="#ffe4b0"
@@ -190,7 +190,7 @@ export default function BottleScene({
 
       <pointLight
         position={[0, -3, 3]}
-        intensity={1.8}
+        intensity={2.2}
         distance={9}
         decay={2}
         color="#9a3d0d"
@@ -198,7 +198,7 @@ export default function BottleScene({
 
       <pointLight
         position={[0, 1, -4]}
-        intensity={5}
+        intensity={4.5}
         distance={12}
         decay={2}
         color="#fbe8b9"
@@ -208,7 +208,7 @@ export default function BottleScene({
           ENVIRONMENT
       ====================================================== */}
 
-      <Environment preset="studio" environmentIntensity={0.35} />
+      <Environment preset="sunset" environmentIntensity={0.28} />
 
       {/* <MonsoonMist /> */}
 

@@ -87,11 +87,11 @@ export default function MonsoonRain() {
       </bufferGeometry>
 
       <pointsMaterial
-        color="#b9c7d6"
-        size={0.035}
+        color="#d18a3e"
+        size={0.025}
         sizeAttenuation
         transparent
-        opacity={0.35}
+        opacity={0.3}
         depthWrite={false}
       />
     </points>
